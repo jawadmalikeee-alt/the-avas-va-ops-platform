@@ -106,7 +106,24 @@ export function AdminDashboard() {
 
       {/* Today's Operations — prioritized metrics */}
       <section>
-        <SectionHeader title="Today's Operations" subtitle="Live snapshot of your active workforce" action={<Button variant="outline" size="sm" onClick={() => setView('live')} className="h-7 text-xs"><Radio className="h-3 w-3 mr-1" />Live view</Button>} />
+        <SectionHeader
+          title="Today's Operations"
+          subtitle="Live snapshot of your active workforce"
+          action={
+            <button
+              onClick={() => setView('live')}
+              className={`group flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition-all btn-press ${
+                m.workingVAs > 0
+                  ? 'bg-emerald-500 text-white hover:bg-emerald-600 live-glow'
+                  : 'bg-muted text-muted-foreground hover:bg-muted/70'
+              }`}
+            >
+              <span className={`h-2 w-2 rounded-full ${m.workingVAs > 0 ? 'bg-white live-pulse' : 'bg-muted-foreground/60'}`} />
+              {m.workingVAs > 0 ? `${m.workingVAs} Live Now` : 'Live view'}
+              <Radio className="h-3.5 w-3.5" />
+            </button>
+          }
+        />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <MetricCard label="Active Clients" value={m.activeClients} icon={Users} hint="contracts live" />
           <MetricCard label="Active VAs" value={m.activeVAs} icon={UserCog} hint={`${m.workingVAs} working now`} />

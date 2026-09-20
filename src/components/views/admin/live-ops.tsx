@@ -57,13 +57,14 @@ export function AdminLiveOps() {
   return (
     <div className="space-y-5 pb-16 md:pb-6">
       <div>
-        <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-display font-semibold tracking-tight">Live Operations</h1>
-          <span className="flex items-center gap-1 text-[11px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 live-pulse" />LIVE
+        <div className="flex items-center gap-3">
+          <h1 className="text-3xl font-display tracking-tight text-navy">Live Operations</h1>
+          <span className="flex items-center gap-2 text-xs font-bold text-emerald-700 bg-emerald-500 px-3 py-1.5 rounded-full live-glow text-white shadow-apple">
+            <span className="h-2 w-2 rounded-full bg-white live-pulse" />
+            {filtered.filter((v) => v.status === 'Working').length} LIVE
           </span>
         </div>
-        <p className="text-sm text-muted-foreground mt-1">Real-time view of all active VAs and their current work.</p>
+        <p className="text-sm text-muted-foreground mt-2">Real-time view of all active VAs and their current work.</p>
       </div>
 
       {/* Filters */}

@@ -49,8 +49,9 @@ import { VADocuments } from '@/components/views/va/documents'
 import { VANotifications } from '@/components/views/va/notifications'
 import { VAProfile } from '@/components/views/va/profile'
 
-// Shared chat interface for all roles
+// Shared chat interface and profile editor for all roles
 import { ChatInterface } from '@/components/views/chat-interface'
+import { ProfileEditor } from '@/components/views/profile-editor'
 
 function AdminView({ view }: { view: string }) {
   switch (view) {
@@ -87,7 +88,7 @@ function ClientView({ view }: { view: string }) {
     case 'documents': return <ClientDocuments />
     case 'messages': return <ChatInterface />
     case 'requests': return <ClientRequests />
-    case 'account': return <ClientAccount />
+    case 'account': return <ProfileEditor />
     default: return <ClientOverview />
   }
 }
@@ -104,7 +105,7 @@ function VAView({ view }: { view: string }) {
     case 'documents': return <VADocuments />
     case 'messages': return <ChatInterface />
     case 'notifications': return <VANotifications />
-    case 'profile': return <VAProfile />
+    case 'profile': return <ProfileEditor />
     default: return <VADashboard />
   }
 }

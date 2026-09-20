@@ -50,7 +50,7 @@
 }
 
 :root {
-  /* The AVAS brand palette — corporate navy + gold accent */
+  /* The AVAS brand palette */
   --navy: #1a1f3d;
   --navy-light: #2a3158;
   --navy-deep: #11152b;
@@ -129,13 +129,18 @@
 @layer base {
   * {
     @apply border-border;
+    /* iOS-style font rendering */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
   body {
+    /* iOS system font stack — SF Pro on Apple devices, fallback to Inter */
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Inter", system-ui, sans-serif;
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "ss01", "cv01", "cv11";
-    text-rendering: optimizeLegibility;
+    /* iOS-style tabular numbers for metrics */
+    font-variant-numeric: tabular-nums;
   }
   ::-webkit-scrollbar {
     width: 10px;
@@ -157,11 +162,23 @@
   }
 }
 
-/* Apple SF Pro-like display font */
+/* SF Pro-like display font with tighter letter spacing */
 .font-display {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "Inter", system-ui, sans-serif;
   font-feature-settings: "ss01", "cv11";
   letter-spacing: -0.022em;
   font-weight: 600;
+}
+
+/* SF Pro Text for body copy */
+.font-text {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Inter", system-ui, sans-serif;
+}
+
+/* SF Mono for tabular/timer displays */
+.font-mono {
+  font-family: "SF Mono", "SF Pro Text", ui-monospace, "Menlo", "Monaco", monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 .tabular-nums {
@@ -180,9 +197,9 @@
 .border-gold { border-color: var(--gold); }
 .ring-gold { --tw-ring-color: var(--gold); }
 
-/* Apple frosted glass effect */
+/* Apple frosted glass effects */
 .glass {
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(245, 245, 247, 0.72);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
@@ -193,7 +210,7 @@
   -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
 
-/* Apple-style soft shadow */
+/* iOS-style soft shadows */
 .shadow-apple {
   box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
 }
@@ -210,13 +227,30 @@
   box-shadow: 0 24px 60px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.08);
 }
 
-/* Live pulse for status indicators */
+/* Live pulse — enhanced visibility */
 @keyframes live-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.9); }
+  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  50% { opacity: 0.85; transform: scale(1.05); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
 }
 .live-pulse {
-  animation: live-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: live-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes live-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6), 0 0 12px 2px rgba(16, 185, 129, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0), 0 0 24px 4px rgba(16, 185, 129, 0.6); }
+}
+.live-glow {
+  animation: live-glow 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Live badge ribbon */
+@keyframes badge-pulse {
+  0%, 100% { background-color: #10b981; transform: scale(1); }
+  50% { background-color: #059669; transform: scale(1.08); }
+}
+.badge-pulse {
+  animation: badge-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 /* Shimmer for skeletons */
@@ -230,7 +264,7 @@
   animation: shimmer 2s linear infinite;
 }
 
-/* Navy sidebar with gold active state */
+/* Navy sidebar */
 .sidebar-navy {
   background: linear-gradient(180deg, #1a1f3d 0%, #11152b 100%);
 }
@@ -255,7 +289,7 @@
   box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.35);
 }
 
-/* Apple-style scale animation on press */
+/* iOS-style press animation */
 .btn-press {
   transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -280,14 +314,67 @@
   animation: scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Message bubble */
+/* iMessage-style bubbles */
 .msg-bubble-sent {
   background: var(--navy);
   color: white;
-  border-radius: 18px 18px 4px 18px;
+  border-radius: 20px 20px 4px 20px;
 }
 .msg-bubble-recv {
-  background: #f5f5f7;
+  background: #e9e9eb;
   color: #1d1d1f;
-  border-radius: 18px 18px 18px 4px;
+  border-radius: 20px 20px 20px 4px;
+}
+
+/* Typing indicator dots */
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+.typing-dot {
+  animation: typing-bounce 1.4s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* File attachment card */
+.file-card {
+  background: rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 12px;
+  transition: all 0.15s ease;
+}
+.file-card:hover {
+  background: rgba(0,0,0,0.06);
+}
+
+/* iOS toggle switch */
+.ios-switch {
+  appearance: none;
+  width: 51px;
+  height: 31px;
+  background: #e9e9eb;
+  border: none;
+  border-radius: 31px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.ios-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease;
+}
+.ios-switch:checked {
+  background: #34c759;
+}
+.ios-switch:checked::after {
+  transform: translateX(20px);
 }

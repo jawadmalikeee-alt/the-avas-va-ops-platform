@@ -12,12 +12,10 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "The AVAS — Real Estate VA Operations Platform",
   description: "Enterprise-grade virtual assistant operations platform for real estate professionals. Manage clients, VAs, time tracking, quality, and service delivery from one command center.",
-  keywords: ["The AVAS", "Virtual Assistant", "Real Estate VA", "Operations Platform", "Enterprise SaaS", "CRM", "Cold Calling"],
+  keywords: ["The AVAS", "Virtual Assistant", "Real Estate VA", "Operations Platform", "Enterprise SaaS"],
   authors: [{ name: "The AVAS" }],
   icons: {
-    icon: [
-      { url: "/avas-icon.svg", type: "image/svg+xml" },
-    ],
+    icon: [{ url: "/avas-icon.svg", type: "image/svg+xml" }],
     apple: "/avas-icon.svg",
   },
   openGraph: {

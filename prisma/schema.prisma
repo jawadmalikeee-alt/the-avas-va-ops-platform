@@ -439,7 +439,12 @@ model Message {
   threadId   String?
   body       String
   attachmentUrl String?
+  attachmentType String?  // image, pdf, doc, file, audio, video
+  attachmentName String?
+  attachmentSize Int?
   read       Boolean  @default(false)
+  deliveredAt DateTime?
+  seenAt     DateTime?
   createdAt  DateTime @default(now())
 
   sender     User     @relation("MessageSender", fields: [senderId], references: [id])
