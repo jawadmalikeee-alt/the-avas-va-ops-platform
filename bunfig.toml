@@ -1,3 +1,0 @@
-[env]
-# Don't auto-load .env files
-files = []
