@@ -7,7 +7,7 @@ import { Avatar, MetricCard, StatusBadge, SectionHeader, MiniProgress, EmptyStat
 import { useAuth } from '@/stores/auth'
 import { useViewStore } from '@/stores/view'
 import { formatDuration, formatTime, formatRelative, hoursFromMs } from '@/lib/format'
-import { Clock, ListTodo, TrendingUp, ShieldCheck, ChevronRight, Activity, Send, FileText, Package } from 'lucide-react'
+import { Clock, ListTodo, TrendingUp, ShieldCheck, ChevronRight, Activity, Send, FileText, Package, MessageSquare, Phone, Video, Mail } from 'lucide-react'
 
 interface ClientData {
   visibility: any
@@ -103,6 +103,11 @@ export function ClientOverview() {
             </div>
           )}
         </Card>
+      )}
+
+      {/* Messages — second section, right under VA status */}
+      {v.canMessageVA && (
+        <MessagesSection />
       )}
 
       {/* Today + This Week row */}
@@ -252,5 +257,72 @@ function Stat({ label, value, hint }: { label: string; value: React.ReactNode; h
       <div className="mt-0.5">{value}</div>
       {hint && <div className="text-[10px] text-muted-foreground mt-0.5">{hint}</div>}
     </div>
+  )
+}
+
+// ============================================================
+// Messages Section — shows recent conversations on the dashboard
+// ============================================================
+function MessagesSection() {
+  const { setView } = useViewStore()
+  const [partners, setPartners] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/messages', { cache: 'no-store' })
+      .then(r => r.json())
+      .then(d => setPartners(d.partners ?? []))
+      .finally(() => setLoading(false))
+  }, [])
+
+  const totalUnread = partners.reduce((s, p) => s + (p.unreadCount ?? 0), 0)
+
+  return (
+    <Card className="border-border shadow-apple p-5">
+      <SectionHeader
+        title="Messages"
+        subtitle={totalUnread > 0 ? `${totalUnread} unread message${totalUnread !== 1 ? 's' : ''}` : 'Recent conversations'}
+        action={
+          <div className="flex items-center gap-1">
+            <Button size="icon" variant="ghost" className="rounded-full hover:bg-avas-blue/10" title="Audio Call" onClick={() => setView('messages')}><Phone className="h-[18px] w-[18px] text-avas-blue" /></Button>
+            <Button size="icon" variant="ghost" className="rounded-full hover:bg-avas-blue/10" title="Video Call" onClick={() => setView('messages')}><Video className="h-[18px] w-[18px] text-avas-blue" /></Button>
+            <Button size="icon" variant="ghost" className="rounded-full hover:bg-avas-blue/10" title="Send Email" onClick={() => setView('messages')}><Mail className="h-[18px] w-[18px] text-avas-blue" /></Button>
+            <Button variant="ghost" size="sm" className="h-8 text-xs font-semibold" onClick={() => setView('messages')}>View all <ChevronRight className="h-3.5 w-3.5 ml-0.5" /></Button>
+          </div>
+        }
+      />
+      {loading ? (
+        <div className="space-y-2">
+          {[1,2,3].map(i => <div key={i} className="h-12 shimmer rounded-xl" />)}
+        </div>
+      ) : partners.length === 0 ? (
+        <EmptyState icon={MessageSquare} title="No messages yet" description="Start a conversation with your VA or the AVAS team." action={<Button size="sm" className="bg-avas-blue hover:bg-avas-blue-light" onClick={() => setView('messages')}><MessageSquare className="h-4 w-4 mr-1.5" />Open Messages</Button>} />
+      ) : (
+        <div className="space-y-1">
+          {partners.slice(0, 4).map((p) => (
+            <button
+              key={p.id}
+              onClick={() => setView('messages')}
+              className="w-full flex items-center gap-3 px-2 py-2.5 rounded-xl hover:bg-muted/50 transition-colors text-left"
+            >
+              <div className="relative">
+                <Avatar name={p.name} src={p.avatarUrl} size="sm" />
+                {(p.status === 'Working' || p.status === 'Online') && <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 border-2 border-card live-pulse" />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm font-bold text-foreground truncate">{p.name}</div>
+                  {p.lastMessageAt && <div className="text-[11px] text-foreground/60 ml-1 shrink-0 font-medium">{formatRelative(p.lastMessageAt)}</div>}
+                </div>
+                <div className="text-xs text-foreground/70 truncate mt-0.5 font-medium">
+                  {p.lastMessageAttachment === 'image' ? '📷 Photo' : p.lastMessageAttachment ? '📎 Attachment' : (p.lastMessage || p.jobTitle || 'Start chatting')}
+                </div>
+              </div>
+              {p.unreadCount > 0 && <span className="ml-2 h-5 min-w-5 px-1.5 rounded-full bg-avas-blue text-white text-[10px] font-bold flex items-center justify-center shrink-0">{p.unreadCount}</span>}
+            </button>
+          ))}
+        </div>
+      )}
+    </Card>
   )
 }
