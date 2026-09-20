@@ -1,0 +1,535 @@
+// The AVAS - Real Estate VA Operations Platform
+// Multi-tenant relational schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// AUTH & USERS
+// ============================================
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  passwordHash  String
+  name          String
+  avatarUrl     String?
+  role          UserRole
+  timezone      String   @default("Asia/Karachi")
+  phone         String?
+  jobTitle      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  lastActiveAt  DateTime?
+
+  // Relations (loose — not all roles use all)
+  client        Client?
+  vaProfile     VA?
+  notifications Notification[]
+  messagesSent  Message[]   @relation("MessageSender")
+  messagesRecv  Message[]   @relation("MessageReceiver")
+  auditLogs     AuditLog[]
+  qaReviews     QAReview[]  @relation("QAEvaluator")
+  timeEntries   TimeEntry[] @relation("TimeEntryUser")
+  feedback      Feedback[]
+  taskComments  TaskComment[]
+  tasksCreated  Task[]      @relation("TaskCreator")
+  tickets       Ticket[]
+  assignments  Assignment[] @relation("AssignmentUser")
+}
+
+enum UserRole {
+  ADMIN
+  CLIENT
+  VA
+  OPERATIONS_MANAGER
+  TEAM_LEAD
+  QA_MANAGER
+}
+
+// ============================================
+// CLIENTS (TENANTS)
+// ============================================
+
+model Client {
+  id              String   @id @default(cuid())
+  companyName     String
+  contactPerson   String
+  email           String   @unique
+  phone           String?
+  country         String
+  timezone        String   @default("America/New_York")
+  industry        String   @default("Real Estate")
+  package         String   @default("Real Estate VA — 40 Hours/Week")
+  contractedHours Int      @default(160) // monthly
+  billingCycle    String   @default("Monthly")
+  startDate       DateTime
+  contractStatus  String   @default("Active") // Active, On Hold, Trial, Ended
+  brandColor      String   @default("#0F172A")
+  logoUrl         String?
+  workingHours    String   @default("40")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Visibility config
+  canSeeHours       Boolean @default(true)
+  canSeeQA           Boolean @default(true)
+  canSeeActivity     Boolean @default(true)
+  canSeeTaskDetails  Boolean @default(true)
+  canMessageVA       Boolean @default(true)
+  canApproveDeliverable Boolean @default(true)
+  canSeePerformance  Boolean @default(true)
+
+  // Relations
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignments    Assignment[]
+  tasks          Task[]
+  deliverables   Deliverable[]
+  qaReviews      QAReview[]
+  tickets        Ticket[]
+  services       ClientService[]
+  documents      Document[]
+  sops           SOP[]
+  feedback       Feedback[]
+  kpis           ClientKPI[]
+}
+
+// ============================================
+// VAs / AGENTS
+// ============================================
+
+model VA {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialization String   // e.g. "Real Estate Virtual Assistant"
+  skills          String   // comma-separated
+  hireDate        DateTime
+  employmentType  String   @default("Full-Time") // Full-Time, Part-Time, Contract
+  monthlySalary   Int?     // internal only
+  status          String   @default("Active") // Active, On Leave, Suspended, Terminated
+  currentStatus   String   @default("Offline") // Online, Working, Break, Offline, Meeting, Training
+  currentTaskId   String?
+  shiftStartedAt  DateTime?
+  lastClockIn     DateTime?
+  performanceScore Float   @default(85.0) // 0-100
+  qualityScore    Float    @default(90.0)
+  attendanceScore Float    @default(95.0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  assignments    Assignment[]
+  tasks          Task[]
+  deliverables   Deliverable[]
+  qaReviews      QAReview[]  @relation("QAVA")
+  feedback       Feedback[]
+  timeEntries    TimeEntry[]
+  attendances    Attendance[]
+  workSubmissions WorkSubmission[]
+  documents      Document[]
+  sopsAssigned   SOPAssignment[]
+}
+
+// ============================================
+// ASSIGNMENTS (Multi-client VA support)
+// ============================================
+
+model Assignment {
+  id              String   @id @default(cuid())
+  clientId        String
+  vaId            String
+  userId          String? // optional - if specific VA-user is required
+  role            String   // e.g. "Lead Management VA", "Social Media VA"
+  weeklyHours     Int       @default(40)
+  schedule        String    // e.g. "Mon-Fri 9:00 AM - 6:00 PM PKT"
+  startDate       DateTime
+  endDate         DateTime?
+  status          String   @default("Active") // Active, Paused, Ended
+  createdAt       DateTime @default(now())
+
+  client          Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  va              VA        @relation(fields: [vaId], references: [id], onDelete: Cascade)
+  user            User?     @relation("AssignmentUser", fields: [userId], references: [id])
+}
+
+// ============================================
+// SERVICES & KPIs (configurable)
+// ============================================
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  category    String   @default("Real Estate") // configurable
+  kpiTemplate String?  // JSON string of default KPIs
+  createdAt   DateTime @default(now())
+
+  clientServices ClientService[]
+}
+
+model ClientService {
+  id         String   @id @default(cuid())
+  clientId   String
+  serviceId  String
+  enabled    Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  client     Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  service    Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  @@unique([clientId, serviceId])
+}
+
+model KPI {
+  id         String   @id @default(cuid())
+  serviceId  String?
+  name       String   // e.g. "Leads Processed"
+  unit       String   @default("count") // count, %, hours
+  target     Int?
+  weight     Float    @default(1.0)
+  createdAt  DateTime @default(now())
+
+  results    ClientKPI[]
+}
+
+model ClientKPI {
+  id         String   @id @default(cuid())
+  clientId   String
+  kpiId      String
+  period     String   // e.g. "2026-W38" or "2026-09"
+  value      Float
+  target     Float?
+  createdAt  DateTime @default(now())
+
+  client     Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  kpi        KPI      @relation(fields: [kpiId], references: [id], onDelete: Cascade)
+}
+
+// ============================================
+// TIME TRACKING & ATTENDANCE
+// ============================================
+
+model TimeEntry {
+  id         String   @id @default(cuid())
+  userId     String
+  vaId       String?
+  clientId   String?
+  taskId     String?
+  clockIn    DateTime
+  clockOut   DateTime?
+  breakMs    Int      @default(0)
+  status     String   @default("Active") // Active, Paused, Break, Ended, Adjusted
+  adjustedBy String?
+  adjustReason String?
+  createdAt   DateTime @default(now())
+
+  user       User     @relation("TimeEntryUser", fields: [userId], references: [id])
+  va         VA?      @relation(fields: [vaId], references: [id])
+  task       Task?    @relation(fields: [taskId], references: [id])
+}
+
+model Attendance {
+  id         String   @id @default(cuid())
+  vaId       String
+  date       DateTime
+  scheduled  String   // e.g. "09:00-18:00"
+  clockIn    DateTime?
+  clockOut   DateTime?
+  breakMs    Int      @default(0)
+  workedMs   Int      @default(0)
+  status     String   @default("Present") // Present, Late, Absent, Half Day, Leave, Holiday, Incomplete
+
+  va         VA       @relation(fields: [vaId], references: [id], onDelete: Cascade)
+
+  @@unique([vaId, date])
+}
+
+// ============================================
+// TASKS & PROJECTS
+// ============================================
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  clientId    String?
+  vaId        String?
+  projectId   String?
+  service     String?
+  priority    String   @default("Medium") // Low, Medium, High, Urgent
+  status      String   @default("To Do") // To Do, In Progress, Review, Completed, Rejected
+  dueDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  startedAt   DateTime?
+  completedAt DateTime?
+  progress    Int      @default(0) // 0-100
+  timeSpentMs Int      @default(0)
+  deliverableUrl String?
+  qaStatus    String?  // null, Pending, Pass, Fail
+  createdById String?
+  sourceRequest String? // ClientRequest, Admin, VA
+
+  client      Client?  @relation(fields: [clientId], references: [id])
+  va          VA?      @relation(fields: [vaId], references: [id])
+  project     Project? @relation(fields: [projectId], references: [id])
+  creator     User?    @relation("TaskCreator", fields: [createdById], references: [id])
+  timeEntries TimeEntry[]
+  comments    TaskComment[]
+  submissions WorkSubmission[]
+  qaReview    QAReview?   @relation("QATask")
+  feedback    Feedback[]
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  clientId    String?
+  status      String   @default("Active")
+  startDate   DateTime
+  endDate     DateTime?
+  createdAt   DateTime @default(now())
+
+  tasks       Task[]
+}
+
+model TaskComment {
+  id        String   @id @default(cuid())
+  taskId    String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+// ============================================
+// DELIVERABLES & WORK SUBMISSIONS
+// ============================================
+
+model Deliverable {
+  id         String   @id @default(cuid())
+  title      String
+  clientId   String
+  vaId       String?
+  service    String?
+  date       DateTime  @default(now())
+  status     String   @default("Submitted") // Submitted, Under Review, Approved, Revision Requested
+  fileUrl    String?
+  fileName   String?
+  notes      String?
+  approvedAt DateTime?
+  approvedById String?
+  revisionNotes String?
+
+  client     Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  va         VA?      @relation(fields: [vaId], references: [id])
+}
+
+model WorkSubmission {
+  id         String   @id @default(cuid())
+  taskId     String
+  vaId       String
+  payload    String   // JSON string with KPI-like fields
+  notes      String?
+  fileUrl    String?
+  fileName   String?
+  submittedAt DateTime @default(now())
+  reviewedAt  DateTime?
+  status     String   @default("Submitted") // Submitted, Reviewed, Approved, Rejected
+
+  task       Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  va         VA       @relation(fields: [vaId], references: [id])
+}
+
+// ============================================
+// QUALITY ASSURANCE
+// ============================================
+
+model QAReview {
+  id           String   @id @default(cuid())
+  evaluatorId  String
+  vaId         String
+  clientId     String?
+  taskId       String?  @unique
+  date         DateTime @default(now())
+  accuracy     Float    @default(100)
+  completeness Float    @default(100)
+  sopAdherence Float    @default(100)
+  communication Float   @default(100)
+  timeliness   Float    @default(100)
+  professionalism Float @default(100)
+  score        Float    @default(95)
+  mistakes     String?
+  feedback     String?
+  correctiveAction String?
+  weight       String   @default("25,20,20,15,10,10") // configurable
+
+  evaluator    User     @relation("QAEvaluator", fields: [evaluatorId], references: [id])
+  va           VA       @relation("QAVA", fields: [vaId], references: [id])
+  client       Client?  @relation(fields: [clientId], references: [id])
+  task         Task?     @relation("QATask", fields: [taskId], references: [id])
+}
+
+// ============================================
+// DOCUMENTS & SOPs
+// ============================================
+
+model Document {
+  id         String   @id @default(cuid())
+  clientId   String?
+  vaId       String?
+  title      String
+  category   String   // Contracts, SOPs, Brand Assets, Credentials, Reports, Deliverables, Training
+  fileUrl    String?
+  fileName   String?
+  fileSize   Int?
+  isSensitive Boolean @default(false)
+  encrypted  Boolean  @default(false)
+  uploadedAt DateTime @default(now())
+  uploadedById String?
+
+  client     Client?  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  va         VA?      @relation(fields: [vaId], references: [id])
+}
+
+model SOP {
+  id         String   @id @default(cuid())
+  clientId   String?
+  title      String
+  version    String   @default("v1.0")
+  content    String
+  lastUpdated DateTime @default(now())
+  category   String   @default("General")
+
+  client     Client?  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  assignments SOPAssignment[]
+}
+
+model SOPAssignment {
+  id        String   @id @default(cuid())
+  sopId     String
+  vaId      String
+  assignedAt DateTime @default(now())
+
+  sop       SOP      @relation(fields: [sopId], references: [id], onDelete: Cascade)
+  va        VA       @relation(fields: [vaId], references: [id], onDelete: Cascade)
+
+  @@unique([sopId, vaId])
+}
+
+// ============================================
+// COMMUNICATION
+// ============================================
+
+model Message {
+  id         String   @id @default(cuid())
+  senderId   String
+  receiverId String?
+  clientId   String?
+  threadId   String?
+  body       String
+  attachmentUrl String?
+  read       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  sender     User     @relation("MessageSender", fields: [senderId], references: [id])
+  receiver   User?    @relation("MessageReceiver", fields: [receiverId], references: [id])
+}
+
+model Ticket {
+  id         String   @id @default(cuid())
+  ticketId   String   @unique // e.g. TKT-0001
+  clientId   String
+  title      String
+  description String
+  type       String   @default("Task Request") // Task Request, Change Request, Issue, Question, Urgent
+  priority   String   @default("Medium")
+  status     String   @default("Open") // Open, In Progress, Waiting, Resolved, Closed
+  assignedToId String?
+  dueDate    DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  client     Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  assignee   User?    @relation(fields: [assignedToId], references: [id])
+}
+
+// ============================================
+// NOTIFICATIONS
+// ============================================
+
+model Notification {
+  id         String   @id @default(cuid())
+  userId     String
+  type       String   // task_assigned, task_completed, deliverable_submitted, qa_completed, etc.
+  title      String
+  body       String?
+  link       String?
+  read       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// ============================================
+// FEEDBACK (Client Satisfaction)
+// ============================================
+
+model Feedback {
+  id         String   @id @default(cuid())
+  clientId   String
+  vaId       String?
+  taskId     String?
+  rating     Int      // 1-5
+  comment    String?
+  period     String   // Weekly, Monthly, Project-based, Task
+  createdAt  DateTime @default(now())
+
+  client     Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  va         VA?      @relation(fields: [vaId], references: [id])
+  user       User?     @relation(fields: [userId], references: [id])
+  userId     String?
+  task       Task?     @relation(fields: [taskId], references: [id])
+}
+
+// ============================================
+// AUDIT LOGS (immutable)
+// ============================================
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String
+  action     String   // e.g. "VA_ASSIGNMENT_CHANGED"
+  entityType String   // e.g. "Assignment"
+  entityId   String?
+  before     String?  // JSON
+  after      String?  // JSON
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  actor      User     @relation(fields: [actorId], references: [id])
+}
+
+// ============================================
+// REPORTS (saved report templates)
+// ============================================
+
+model Report {
+  id         String   @id @default(cuid())
+  title      String
+  type       String   // client_weekly, va_performance, etc.
+  config     String   // JSON config
+  createdBy String
+  createdAt  DateTime @default(now())
+}

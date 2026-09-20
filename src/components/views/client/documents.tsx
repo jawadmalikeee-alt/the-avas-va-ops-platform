@@ -1,0 +1,72 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Pill, EmptyState, LoadingSkeleton, SectionHeader } from '@/components/ui-primitives'
+import { Header, FilterBar, DataTable } from '@/components/views/admin/clients'
+import { formatRelative } from '@/lib/format'
+import { Upload, FolderOpen, Lock, FileText, FileImage, Download } from 'lucide-react'
+
+const CATS = ['All', 'Contracts', 'SOPs', 'Brand Assets', 'Credentials', 'Reports', 'Deliverables', 'Training']
+
+export function ClientDocuments() {
+  const [items, setItems] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [cat, setCat] = useState('All')
+
+  useEffect(() => {
+    fetch('/api/data/admin-list?type=documents', { cache: 'no-store' })
+      .then(r => r.json())
+      .then(d => setItems(d.items ?? []))
+      .finally(() => setLoading(false))
+  }, [])
+
+  const filtered = cat === 'All' ? items : items.filter((i) => i.category === cat)
+
+  return (
+    <div className="space-y-5 pb-16 md:pb-6">
+      <Header title="Documents" subtitle="Your shared documents with The AVAS team" action={<Button size="sm" className="h-8"><Upload className="h-3.5 w-3.5 mr-1" />Upload</Button>} />
+      <div className="flex items-center gap-1.5 flex-wrap">
+        {CATS.map((c) => (
+          <button key={c} onClick={() => setCat(c)} className={`px-2 py-1 rounded-md text-[11px] font-medium ${cat === c ? 'bg-foreground text-background' : 'bg-muted text-muted-foreground hover:bg-muted/70'}`}>{c}</button>
+        ))}
+      </div>
+      <Card className="border-border/70 shadow-none">
+        {loading ? <LoadingSkeleton /> :
+          filtered.length === 0 ? <EmptyState icon={FolderOpen} title="No documents" description="Your AVAS team will upload documents as needed." /> :
+          <DataTable
+            columns={[
+              { key: 'name', header: 'Document', render: (r) => (
+                <div className="flex items-center gap-2 min-w-0">
+                  <FileIcon name={r.fileName} />
+                  <div className="min-w-0">
+                    <div className="text-xs font-medium text-foreground truncate flex items-center gap-1">
+                      {r.title}
+                      {r.isSensitive && <Lock className="h-3 w-3 text-amber-500" />}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground truncate">{r.fileName} · {Math.round((r.fileSize ?? 0) / 1024)} KB</div>
+                  </div>
+                </div>
+              ) },
+              { key: 'category', header: 'Category', render: (r) => <Pill tone="muted">{r.category}</Pill> },
+              { key: 'uploaded', header: 'Uploaded', render: (r) => <div className="text-[11px] text-muted-foreground">{formatRelative(r.uploadedAt)}</div> },
+              { key: 'actions', header: '', render: () => <Button size="sm" variant="ghost" className="h-7 text-[11px]"><Download className="h-3 w-3 mr-1" />Download</Button> },
+            ]}
+            rows={filtered}
+          />
+        }
+      </Card>
+      <div className="text-[11px] text-muted-foreground flex items-center gap-1.5 px-1">
+        <Lock className="h-3 w-3" />
+        Sensitive credentials are stored encrypted and only accessible to authorized AVAS personnel.
+      </div>
+    </div>
+  )
+}
+
+function FileIcon({ name }: { name: string }) {
+  const ext = name?.split('.').pop()?.toLowerCase()
+  const Icon = ext === 'pdf' ? FileText : ext === 'png' || ext === 'jpg' ? FileImage : FileText
+  return <div className="h-7 w-7 rounded-md bg-muted flex items-center justify-center shrink-0"><Icon className="h-3.5 w-3.5 text-muted-foreground" /></div>
+}
