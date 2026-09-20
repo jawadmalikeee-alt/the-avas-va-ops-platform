@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Avatar, SectionHeader } from '@/components/ui-primitives'
 import { useAuth } from '@/stores/auth'
-import { Camera, Mail, Phone, Globe, Clock, Briefcase, User, Save, Upload, Shield, Building2, Check } from 'lucide-react'
+import { Camera, Mail, Phone, Globe, Clock, Briefcase, User, Save, Upload, Shield, Building2, Check, Lock, Eye, EyeOff } from 'lucide-react'
 import { toast } from '@/components/ui-primitives/toast'
 import { cn } from '@/lib/utils'
 
@@ -18,6 +18,10 @@ export function ProfileEditor() {
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [dirty, setDirty] = useState(false)
+  const [showPwForm, setShowPwForm] = useState(false)
+  const [pwForm, setPwForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' })
+  const [showPasswords, setShowPasswords] = useState(false)
+  const [changingPw, setChangingPw] = useState(false)
   const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -99,6 +103,39 @@ export function ProfileEditor() {
     } catch {
       toast('Failed to save', 'error')
     } finally { setSaving(false) }
+  }
+
+  const changePassword = async () => {
+    if (!pwForm.currentPassword || !pwForm.newPassword) {
+      toast('Please fill in all password fields', 'error')
+      return
+    }
+    if (pwForm.newPassword !== pwForm.confirmPassword) {
+      toast('New passwords do not match', 'error')
+      return
+    }
+    if (pwForm.newPassword.length < 6) {
+      toast('Password must be at least 6 characters', 'error')
+      return
+    }
+    setChangingPw(true)
+    try {
+      const res = await fetch('/api/auth/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currentPassword: pwForm.currentPassword,
+          newPassword: pwForm.newPassword,
+        }),
+      })
+      const d = await res.json()
+      if (!res.ok) { toast(d.error ?? 'Failed to change password', 'error'); return }
+      toast('Password changed successfully', 'success')
+      setPwForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
+      setShowPwForm(false)
+    } catch {
+      toast('Failed to change password', 'error')
+    } finally { setChangingPw(false) }
   }
 
   if (!user) return null
@@ -260,14 +297,62 @@ export function ProfileEditor() {
       <Card className="rounded-2xl border-border shadow-apple p-6">
         <SectionHeader title="Security" />
         <div className="space-y-3">
-          <div className="flex items-center justify-between py-2">
-            <div>
-              <div className="text-sm font-bold text-foreground">Change Password</div>
-              <div className="text-xs text-foreground/70 mt-0.5 font-medium">Update your account password</div>
+          {/* Change Password */}
+          <div className="py-2">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-sm font-bold text-foreground">Change Password</div>
+                <div className="text-xs text-foreground/70 mt-0.5 font-medium">Update your account password</div>
+              </div>
+              <Button variant="outline" size="sm" className="rounded-full h-8" onClick={() => setShowPwForm(!showPwForm)}>
+                <Lock className="h-3.5 w-3.5 mr-1.5" />{showPwForm ? 'Cancel' : 'Change'}
+              </Button>
             </div>
-            <Button variant="outline" size="sm" className="rounded-full h-8" onClick={() => toast('Password change link sent to your email', 'success')}>
-              <Shield className="h-3.5 w-3.5 mr-1.5" />Change
-            </Button>
+            {showPwForm && (
+              <div className="mt-4 space-y-3 p-4 rounded-xl bg-muted/30 border border-border">
+                <div>
+                  <Label className="text-[11px] text-foreground/60 font-bold">Current Password</Label>
+                  <div className="relative mt-1.5">
+                    <Input
+                      type={showPasswords ? 'text' : 'password'}
+                      value={pwForm.currentPassword}
+                      onChange={(e) => setPwForm({ ...pwForm, currentPassword: e.target.value })}
+                      placeholder="Enter current password"
+                      className="h-10 text-sm pr-10"
+                    />
+                    <button onClick={() => setShowPasswords(!showPasswords)} className="absolute right-3 top-1/2 -translate-y-1/2 text-foreground/50 hover:text-foreground">
+                      {showPasswords ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-[11px] text-foreground/60 font-bold">New Password</Label>
+                    <Input
+                      type={showPasswords ? 'text' : 'password'}
+                      value={pwForm.newPassword}
+                      onChange={(e) => setPwForm({ ...pwForm, newPassword: e.target.value })}
+                      placeholder="At least 6 characters"
+                      className="mt-1.5 h-10 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[11px] text-foreground/60 font-bold">Confirm New Password</Label>
+                    <Input
+                      type={showPasswords ? 'text' : 'password'}
+                      value={pwForm.confirmPassword}
+                      onChange={(e) => setPwForm({ ...pwForm, confirmPassword: e.target.value })}
+                      placeholder="Re-enter new password"
+                      className="mt-1.5 h-10 text-sm"
+                    />
+                  </div>
+                </div>
+                <Button size="sm" onClick={changePassword} disabled={changingPw} className="w-full h-9 bg-avas-blue hover:bg-avas-blue-light">
+                  <Lock className="h-3.5 w-3.5 mr-1.5" />
+                  {changingPw ? 'Changing…' : 'Change Password'}
+                </Button>
+              </div>
+            )}
           </div>
           <div className="flex items-center justify-between py-2 border-t border-border">
             <div>

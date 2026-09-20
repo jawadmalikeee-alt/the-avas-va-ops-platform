@@ -52,8 +52,8 @@ async function main() {
   console.log('Creating ADMIN user...')
   const adminUser = await db.user.create({
     data: {
-      email: 'jawad@theavas.com',
-      passwordHash: hashPassword('admin123'),
+      email: 'admin@theavas.com',
+      passwordHash: hashPassword('avasadmin2026'),
       name: 'Jawad Malik',
       role: 'ADMIN',
       timezone: 'Asia/Karachi',
@@ -65,7 +65,7 @@ async function main() {
   const qaManager = await db.user.create({
     data: {
       email: 'qa@theavas.com',
-      passwordHash: hashPassword('admin123'),
+      passwordHash: hashPassword('avasadmin2026'),
       name: 'Ayesha Khan',
       role: 'QA_MANAGER',
       timezone: 'Asia/Karachi',
@@ -89,7 +89,7 @@ async function main() {
       db.user.create({
         data: {
           email: u.email,
-          passwordHash: hashPassword('va123'),
+          passwordHash: hashPassword('va_temp_2026'),
           name: u.name,
           role: 'VA',
           timezone: 'Asia/Karachi',
@@ -134,7 +134,7 @@ async function main() {
       db.user.create({
         data: {
           email: c.email,
-          passwordHash: hashPassword('client123'),
+          passwordHash: hashPassword('client_temp_2026'),
           name: c.contact,
           role: 'CLIENT',
           timezone: c.tz,
@@ -606,9 +606,8 @@ async function main() {
 
   console.log('\n✅ Seed complete!\n')
   console.log('Demo accounts:')
-  console.log('  ADMIN:   jawad@theavas.com   / admin123')
-  console.log('  CLIENT:  michael@abcrealty.com / client123')
-  console.log('  VA:      sarah@theavas.com   / va123')
+  console.log('  Default Admin: admin@theavas.com / avasadmin2026')
+  console.log('  (VA and Client accounts have placeholder passwords — admin can reset them from Settings → Users)')
 }
 
 function getWeekNumber(): number {
