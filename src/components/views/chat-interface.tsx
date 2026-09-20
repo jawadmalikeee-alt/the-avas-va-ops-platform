@@ -269,18 +269,18 @@ export function ChatInterface() {
       <div className="flex items-end justify-between gap-3">
         <div>
           <h1 className="text-3xl font-display tracking-tight text-navy">Messages</h1>
-          <p className="text-sm text-muted-foreground mt-1">Chat, call, and email directly with your team.</p>
+          <p className="text-sm text-muted-foreground mt-1.5 font-medium">Chat, call, and email directly with your team.</p>
         </div>
-        <Button size="sm" variant="gold" onClick={() => setShowNewChat(true)}><Plus className="h-4 w-4 mr-1.5" />New Chat</Button>
+        <Button size="sm" onClick={() => setShowNewChat(true)} className="bg-avas-blue hover:bg-avas-blue-light"><Plus className="h-4 w-4 mr-1.5" />New Chat</Button>
       </div>
 
       <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3 min-h-0">
         {/* Conversation list */}
         <Card className="rounded-2xl border-border shadow-apple flex flex-col min-h-0 p-0 overflow-hidden">
-          <div className="px-3 py-3 border-b border-border">
+          <div className="px-3 py-3 border-b border-border bg-card">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input placeholder="Search conversations…" className="bg-muted rounded-full pl-9 pr-3 py-2 text-sm w-full outline-none focus:ring-2 focus:ring-navy/20" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-foreground/60" />
+              <input placeholder="Search conversations…" className="bg-muted rounded-full pl-9 pr-3 py-2.5 text-sm w-full outline-none text-foreground placeholder:text-foreground/50 focus:ring-2 focus:ring-avas-blue/30" />
             </div>
           </div>
           <div className="flex-1 overflow-y-auto">
@@ -290,7 +290,7 @@ export function ChatInterface() {
                 <button
                   key={p.id}
                   onClick={() => { setActivePartner(p.id); setPartnerInfo(p) }}
-                  className={cn('w-full px-3 py-3 flex items-center gap-3 text-left border-b border-border/50 hover:bg-muted/50 transition-colors', activePartner === p.id && 'bg-muted')}
+                  className={cn('w-full px-3 py-3 flex items-center gap-3 text-left border-b border-border/60 hover:bg-muted/70 transition-colors', activePartner === p.id && 'bg-avas-blue/8 border-l-[3px] border-l-avas-blue')}
                 >
                   <div className="relative">
                     <Avatar name={p.name} src={p.avatarUrl} size="md" />
@@ -298,14 +298,14 @@ export function ChatInterface() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <div className="text-sm font-semibold text-navy truncate">{p.name}</div>
-                      {p.lastMessageAt && <div className="text-[10px] text-muted-foreground ml-1 shrink-0">{formatRelative(p.lastMessageAt)}</div>}
+                      <div className="text-sm font-bold text-foreground truncate">{p.name}</div>
+                      {p.lastMessageAt && <div className="text-[11px] text-foreground/60 ml-1 shrink-0 font-medium">{formatRelative(p.lastMessageAt)}</div>}
                     </div>
                     <div className="flex items-center justify-between mt-0.5">
-                      <div className="text-[11px] text-muted-foreground truncate flex-1">
+                      <div className="text-xs text-foreground/70 truncate flex-1">
                         {p.lastMessageAttachment === 'image' ? '📷 Photo' : p.lastMessageAttachment ? '📎 Attachment' : (p.lastMessage || p.jobTitle || p.role.toLowerCase())}
                       </div>
-                      {p.unreadCount > 0 && <span className="ml-2 h-5 min-w-5 px-1.5 rounded-full bg-gold text-navy text-[10px] font-bold flex items-center justify-center shrink-0">{p.unreadCount}</span>}
+                      {p.unreadCount > 0 && <span className="ml-2 h-5 min-w-5 px-1.5 rounded-full bg-avas-blue text-white text-[10px] font-bold flex items-center justify-center shrink-0">{p.unreadCount}</span>}
                     </div>
                   </div>
                 </button>
@@ -317,29 +317,29 @@ export function ChatInterface() {
         {/* Conversation */}
         <Card className="rounded-2xl border-border shadow-apple md:col-span-2 flex flex-col min-h-0 p-0 overflow-hidden">
           {!partnerInfo ? (
-            <EmptyState icon={Send} title="Select a conversation" description="Choose a contact to start messaging, or start a new chat." action={<Button size="sm" variant="gold" onClick={() => setShowNewChat(true)}><Plus className="h-4 w-4 mr-1.5" />New Chat</Button>} />
+            <EmptyState icon={Send} title="Select a conversation" description="Choose a contact to start messaging, or start a new chat." action={<Button size="sm" onClick={() => setShowNewChat(true)} className="bg-avas-blue hover:bg-avas-blue-light"><Plus className="h-4 w-4 mr-1.5" />New Chat</Button>} />
           ) : (
             <>
               {/* Header with action buttons */}
-              <div className="px-4 py-3 border-b border-border flex items-center gap-3">
-                <button onClick={() => { setActivePartner(null); setPartnerInfo(null) }} className="md:hidden"><ArrowLeft className="h-5 w-5 text-navy" /></button>
+              <div className="px-4 py-3 border-b border-border flex items-center gap-3 bg-card">
+                <button onClick={() => { setActivePartner(null); setPartnerInfo(null) }} className="md:hidden"><ArrowLeft className="h-5 w-5 text-foreground" /></button>
                 <div className="relative">
                   <Avatar name={partnerInfo.name} src={partnerInfo.avatarUrl} size="md" />
                   <StatusDot status={partnerInfo.status} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-sm font-semibold text-navy truncate">{partnerInfo.name}</div>
-                  <div className="text-[11px] text-muted-foreground flex items-center gap-1">
+                  <div className="text-sm font-bold text-foreground truncate">{partnerInfo.name}</div>
+                  <div className="text-[11px] flex items-center gap-1 font-medium">
                     <StatusText status={partnerInfo.status} lastActiveAt={partnerInfo.lastActiveAt} />
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Button size="icon" variant="ghost" onClick={() => startCall('audio')} title="Audio Call" className="rounded-full"><Phone className="h-4 w-4 text-navy" /></Button>
-                  <Button size="icon" variant="ghost" onClick={() => startCall('video')} title="Video Call" className="rounded-full"><Video className="h-4 w-4 text-navy" /></Button>
-                  <Button size="icon" variant="ghost" onClick={() => setShowEmail(true)} title="Send Email" className="rounded-full"><Mail className="h-4 w-4 text-navy" /></Button>
+                  <Button size="icon" variant="ghost" onClick={() => startCall('audio')} title="Audio Call" className="rounded-full hover:bg-avas-blue/10"><Phone className="h-[18px] w-[18px] text-avas-blue" /></Button>
+                  <Button size="icon" variant="ghost" onClick={() => startCall('video')} title="Video Call" className="rounded-full hover:bg-avas-blue/10"><Video className="h-[18px] w-[18px] text-avas-blue" /></Button>
+                  <Button size="icon" variant="ghost" onClick={() => setShowEmail(true)} title="Send Email" className="rounded-full hover:bg-avas-blue/10"><Mail className="h-[18px] w-[18px] text-avas-blue" /></Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button size="icon" variant="ghost" className="rounded-full"><MoreVertical className="h-4 w-4 text-navy" /></Button>
+                      <Button size="icon" variant="ghost" className="rounded-full hover:bg-muted"><MoreVertical className="h-[18px] w-[18px] text-foreground" /></Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="rounded-2xl">
                       <DropdownMenuItem><Info className="h-3.5 w-3.5 mr-2" />Contact Info</DropdownMenuItem>
@@ -354,12 +354,12 @@ export function ChatInterface() {
               </div>
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2 bg-muted/30">
+              <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2 bg-[#f5f5f7]">
                 {messages.length === 0 ? (
                   <div className="text-center py-12">
-                    <div className="h-14 w-14 rounded-2xl bg-card mx-auto flex items-center justify-center mb-3"><Send className="h-6 w-6 text-muted-foreground/40" /></div>
-                    <p className="text-sm font-semibold text-navy">No messages yet</p>
-                    <p className="text-xs text-muted-foreground mt-1">Send your first message to start the conversation.</p>
+                    <div className="h-14 w-14 rounded-2xl bg-card mx-auto flex items-center justify-center mb-3 shadow-apple"><Send className="h-6 w-6 text-foreground/40" /></div>
+                    <p className="text-sm font-bold text-foreground">No messages yet</p>
+                    <p className="text-xs text-foreground/70 mt-1">Send your first message to start the conversation.</p>
                   </div>
                 ) : (
                   <>
@@ -396,20 +396,20 @@ export function ChatInterface() {
                                 />
                               )}
                               {m.body && (
-                                <div className={cn(isMe ? 'msg-bubble-sent' : 'msg-bubble-recv', 'px-3.5 py-2 shadow-apple')}>
-                                  <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{m.body}</p>
+                                <div className={cn(isMe ? 'msg-bubble-sent' : 'msg-bubble-recv', 'px-3.5 py-2.5 shadow-apple')}>
+                                  <p className="text-sm leading-relaxed whitespace-pre-wrap break-words font-medium">{m.body}</p>
                                 </div>
                               )}
-                              <div className={cn('flex items-center gap-1 mt-0.5 px-1', isMe ? 'justify-end' : 'justify-start')}>
-                                <span className="text-[10px] text-muted-foreground">{formatTime(m.createdAt)}</span>
+                              <div className={cn('flex items-center gap-1 mt-1 px-1', isMe ? 'justify-end' : 'justify-start')}>
+                                <span className="text-[11px] text-foreground/60 font-medium">{formatTime(m.createdAt)}</span>
                                 {isMe && <MessageStatus read={m.read} deliveredAt={m.deliveredAt} seenAt={m.seenAt} />}
                                 {isMe && (
                                   <button
                                     onClick={() => deleteMessage(m.id)}
-                                    className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-rose-600"
+                                    className="opacity-0 group-hover:opacity-100 transition-opacity text-foreground/50 hover:text-rose-600"
                                     title="Delete message"
                                   >
-                                    <Trash2 className="h-3 w-3" />
+                                    <Trash2 className="h-3.5 w-3.5" />
                                   </button>
                                 )}
                               </div>
@@ -436,21 +436,21 @@ export function ChatInterface() {
               {/* Input bar */}
               <div className="px-3 py-3 border-t border-border bg-card relative">
                 {showAttachMenu && (
-                  <div className="absolute bottom-16 left-3 z-50 rounded-2xl border border-border bg-popover shadow-apple-lg p-2 grid grid-cols-2 gap-1 w-44 animate-scale-in">
-                    <button onClick={() => { imageInputRef.current?.click(); setShowAttachMenu(false) }} className="flex items-center gap-2 px-2.5 py-2 rounded-xl hover:bg-muted text-xs text-navy font-medium">
-                      <div className="h-8 w-8 rounded-full bg-blue-50 flex items-center justify-center"><ImageIcon className="h-4 w-4 text-blue-500" /></div>
+                  <div className="absolute bottom-16 left-3 z-50 rounded-2xl border border-border bg-popover shadow-apple-lg p-2 grid grid-cols-2 gap-1 w-48 animate-scale-in">
+                    <button onClick={() => { imageInputRef.current?.click(); setShowAttachMenu(false) }} className="flex items-center gap-2 px-2.5 py-2 rounded-xl hover:bg-muted text-xs text-foreground font-semibold">
+                      <div className="h-9 w-9 rounded-full bg-blue-50 flex items-center justify-center"><ImageIcon className="h-[18px] w-[18px] text-blue-600" /></div>
                       Photos
                     </button>
-                    <button onClick={() => { fileInputRef.current?.click(); setShowAttachMenu(false) }} className="flex items-center gap-2 px-2.5 py-2 rounded-xl hover:bg-muted text-xs text-navy font-medium">
-                      <div className="h-8 w-8 rounded-full bg-amber-50 flex items-center justify-center"><FileIcon className="h-4 w-4 text-amber-500" /></div>
+                    <button onClick={() => { fileInputRef.current?.click(); setShowAttachMenu(false) }} className="flex items-center gap-2 px-2.5 py-2 rounded-xl hover:bg-muted text-xs text-foreground font-semibold">
+                      <div className="h-9 w-9 rounded-full bg-amber-50 flex items-center justify-center"><FileIcon className="h-[18px] w-[18px] text-amber-600" /></div>
                       Files
                     </button>
-                    <button onClick={() => { setShowEmail(true); setShowAttachMenu(false) }} className="flex items-center gap-2 px-2.5 py-2 rounded-xl hover:bg-muted text-xs text-navy font-medium">
-                      <div className="h-8 w-8 rounded-full bg-violet-50 flex items-center justify-center"><Mail className="h-4 w-4 text-violet-500" /></div>
+                    <button onClick={() => { setShowEmail(true); setShowAttachMenu(false) }} className="flex items-center gap-2 px-2.5 py-2 rounded-xl hover:bg-muted text-xs text-foreground font-semibold">
+                      <div className="h-9 w-9 rounded-full bg-violet-50 flex items-center justify-center"><Mail className="h-[18px] w-[18px] text-violet-600" /></div>
                       Email
                     </button>
-                    <button onClick={() => { startCall('video'); setShowAttachMenu(false) }} className="flex items-center gap-2 px-2.5 py-2 rounded-xl hover:bg-muted text-xs text-navy font-medium">
-                      <div className="h-8 w-8 rounded-full bg-emerald-50 flex items-center justify-center"><VideoIcon className="h-4 w-4 text-emerald-500" /></div>
+                    <button onClick={() => { startCall('video'); setShowAttachMenu(false) }} className="flex items-center gap-2 px-2.5 py-2 rounded-xl hover:bg-muted text-xs text-foreground font-semibold">
+                      <div className="h-9 w-9 rounded-full bg-emerald-50 flex items-center justify-center"><VideoIcon className="h-[18px] w-[18px] text-emerald-600" /></div>
                       Meet
                     </button>
                   </div>
@@ -459,19 +459,19 @@ export function ChatInterface() {
                 <input ref={fileInputRef} type="file" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) sendFile(f, 'file'); e.target.value = '' }} />
 
                 <div className="flex items-center gap-2">
-                  <Button size="icon" variant="ghost" onClick={() => setShowAttachMenu(!showAttachMenu)} title="Attach" className="rounded-full"><Paperclip className="h-5 w-5 text-muted-foreground" /></Button>
+                  <Button size="icon" variant="ghost" onClick={() => setShowAttachMenu(!showAttachMenu)} title="Attach" className="rounded-full hover:bg-avas-blue/10"><Paperclip className="h-[22px] w-[22px] text-foreground/70" /></Button>
                   <input
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send() } }}
                     placeholder="iMessage"
-                    className="flex-1 bg-muted rounded-full px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-navy/20"
+                    className="flex-1 bg-muted rounded-full px-4 py-2.5 text-sm outline-none text-foreground placeholder:text-foreground/50 focus:ring-2 focus:ring-avas-blue/30"
                   />
-                  <Button size="icon" variant="ghost" title="Emoji" className="rounded-full"><Smile className="h-5 w-5 text-muted-foreground" /></Button>
+                  <Button size="icon" variant="ghost" title="Emoji" className="rounded-full hover:bg-avas-blue/10"><Smile className="h-[22px] w-[22px] text-foreground/70" /></Button>
                   {input.trim() ? (
-                    <Button size="icon" onClick={send} disabled={sending} className="rounded-full bg-navy hover:bg-navy-light" title="Send"><Send className="h-4 w-4" /></Button>
+                    <Button size="icon" onClick={send} disabled={sending} className="rounded-full bg-avas-blue hover:bg-avas-blue-light shadow-apple" title="Send"><Send className="h-[18px] w-[18px]" /></Button>
                   ) : (
-                    <Button size="icon" variant="ghost" title="Voice" className="rounded-full"><Mic className="h-5 w-5 text-muted-foreground" /></Button>
+                    <Button size="icon" variant="ghost" title="Voice" className="rounded-full hover:bg-avas-blue/10"><Mic className="h-[22px] w-[22px] text-foreground/70" /></Button>
                   )}
                 </div>
               </div>
@@ -542,16 +542,16 @@ function StatusDot({ status }: { status?: string }) {
 }
 
 function StatusText({ status, lastActiveAt }: { status?: string; lastActiveAt?: string | null }) {
-  if (status === 'Working' || status === 'Online') return <span className="text-emerald-600 font-medium">Active now</span>
-  if (status === 'Break') return <span className="text-amber-600 font-medium">On break</span>
-  if (status === 'Meeting') return <span className="text-violet-600 font-medium">In a meeting</span>
+  if (status === 'Working' || status === 'Online') return <span className="text-emerald-700 font-semibold">Active now</span>
+  if (status === 'Break') return <span className="text-amber-700 font-semibold">On break</span>
+  if (status === 'Meeting') return <span className="text-violet-700 font-semibold">In a meeting</span>
   if (lastActiveAt) {
     const diff = Date.now() - new Date(lastActiveAt).getTime()
     const min = Math.floor(diff / 60000)
     const hr = Math.floor(min / 60)
     const day = Math.floor(hr / 24)
     const lastSeen = day > 0 ? `${day}d ago` : hr > 0 ? `${hr}h ago` : min > 0 ? `${min}m ago` : 'just now'
-    return <span className="text-muted-foreground">Last seen {lastSeen}</span>
+    return <span className="text-foreground/60 font-semibold">Last seen {lastSeen}</span>
   }
   return <span className="text-muted-foreground">Offline</span>
 }

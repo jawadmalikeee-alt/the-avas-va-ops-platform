@@ -52,86 +52,87 @@
 }
 
 :root {
-  /* AVAS official brand blue (extracted from logo) */
-  --avas-blue: #5271ff;
-  --avas-blue-light: #6b86ff;
-  --avas-blue-deep: #3e5bff;
-  --avas-blue-dark: #2a3fcc;
+  /* AVAS brand — deep, rich blue that's eye-comfortable */
+  --avas-blue: #2d4ed8;
+  --avas-blue-light: #3e5bff;
+  --avas-blue-deep: #1e3a8a;
+  --avas-blue-darker: #172554;
+  --avas-blue-soft: #4f6bff;
   --gold: #c9a961;
   --gold-light: #e0c987;
   --gold-dark: #a8893f;
 
-  /* Keep navy as alias for backwards compat — now maps to AVAS blue */
+  /* Keep navy as alias for backwards compat */
   --navy: var(--avas-blue);
   --navy-light: var(--avas-blue-light);
-  --navy-deep: var(--avas-blue-dark);
+  --navy-deep: var(--avas-blue-deep);
 
-  /* Apple-inspired surface tokens */
-  --background: #f5f5f7;
+  /* Apple-inspired surface tokens — off-white for eye comfort */
+  --background: #fafafa;
   --foreground: #1d1d1f;
   --card: #ffffff;
   --card-foreground: #1d1d1f;
   --popover: #ffffff;
   --popover-foreground: #1d1d1f;
-  --primary: #5271ff;
+  --primary: #2d4ed8;
   --primary-foreground: #ffffff;
-  --secondary: #f5f5f7;
-  --secondary-foreground: #5271ff;
-  --muted: #f5f5f7;
-  --muted-foreground: #6e6e73;
-  --accent: #f5f5f7;
-  --accent-foreground: #5271ff;
-  --destructive: #ff3b30;
-  --border: #e5e5ea;
-  --input: #e5e5ea;
-  --ring: #5271ff;
-  --chart-1: #5271ff;
-  --chart-2: #10b981;
+  --secondary: #f0f0f3;
+  --secondary-foreground: #2d4ed8;
+  --muted: #f0f0f3;
+  --muted-foreground: #5a5a60;
+  --accent: #eff3ff;
+  --accent-foreground: #2d4ed8;
+  --destructive: #dc2626;
+  --border: #e2e2e6;
+  --input: #e2e2e6;
+  --ring: #2d4ed8;
+  --chart-1: #2d4ed8;
+  --chart-2: #059669;
   --chart-3: #c9a961;
-  --chart-4: #ff9500;
-  --chart-5: #5856d6;
+  --chart-4: #ea580c;
+  --chart-5: #7c3aed;
   --sidebar: #ffffff;
   --sidebar-foreground: #1d1d1f;
-  --sidebar-primary: #5271ff;
+  --sidebar-primary: #2d4ed8;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f5f5f7;
-  --sidebar-accent-foreground: #5271ff;
-  --sidebar-border: #e5e5ea;
-  --sidebar-ring: #5271ff;
+  --sidebar-accent: #eff3ff;
+  --sidebar-accent-foreground: #2d4ed8;
+  --sidebar-border: #e2e2e6;
+  --sidebar-ring: #2d4ed8;
 }
 
 .dark {
-  --background: #000000;
+  --background: #0a0a0c;
   --foreground: #f5f5f7;
   --card: #1c1c1e;
   --card-foreground: #f5f5f7;
   --popover: #1c1c1e;
   --popover-foreground: #f5f5f7;
-  --primary: #6b86ff;
+  --primary: #4f6bff;
   --primary-foreground: #1d1d1f;
   --secondary: #2c2c2e;
   --secondary-foreground: #f5f5f7;
   --muted: #2c2c2e;
-  --muted-foreground: #8e8e93;
+  --muted-foreground: #a0a0a8;
   --accent: #2c2c2e;
   --accent-foreground: #f5f5f7;
-  --destructive: #ff453a;
+  --destructive: #ef4444;
   --border: #38383a;
   --input: #38383a;
-  --ring: #6b86ff;
-  --chart-1: #6b86ff;
+  --ring: #4f6bff;
+  --chart-1: #4f6bff;
   --chart-2: #10b981;
-  --chart-3: #ff9500;
-  --chart-4: #5856d6;
-  --chart-5: #ff3b30;
-  --sidebar: #1c1c1e;
+  --chart-3: #f59e0b;
+  --chart-4: #8b5cf6;
+  --chart-5: #ef4444;
+  --sidebar: #14141a;
   --sidebar-foreground: #f5f5f7;
-  --sidebar-primary: #6b86ff;
-  --sidebar-primary-foreground: #1c1c1e;
+  --sidebar-primary: #4f6bff;
+  --sidebar-primary-foreground: #1d1d1f;
   --sidebar-accent: #2c2c2e;
   --sidebar-accent-foreground: #f5f5f7;
   --sidebar-border: #38383a;
-  --sidebar-ring: #6b86ff;
+  --sidebar-ring: #4f6bff;
 }
 
 @layer base {
@@ -148,20 +149,16 @@
     font-variant-numeric: tabular-nums;
   }
   ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
   }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.15);
+    background: rgba(0,0,0,0.18);
     border-radius: 8px;
-    border: 2px solid transparent;
-    background-clip: padding-box;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(0,0,0,0.25);
-    border: 2px solid transparent;
-    background-clip: padding-box;
+    background: rgba(0,0,0,0.3);
   }
 }
 
@@ -170,7 +167,7 @@
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "Inter", system-ui, sans-serif;
   font-feature-settings: "ss01", "cv11";
   letter-spacing: -0.022em;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .font-text {
@@ -184,7 +181,7 @@
 
 .tabular-nums { font-variant-numeric: tabular-nums; }
 
-/* AVAS brand utilities — blue is primary, gold is accent */
+/* AVAS brand utilities */
 .bg-navy { background-color: var(--avas-blue); }
 .bg-navy-light { background-color: var(--avas-blue-light); }
 .bg-navy-deep { background-color: var(--avas-blue-deep); }
@@ -192,6 +189,7 @@
 .bg-avas-blue { background-color: var(--avas-blue); }
 .bg-avas-blue-light { background-color: var(--avas-blue-light); }
 .bg-avas-blue-deep { background-color: var(--avas-blue-deep); }
+.bg-avas-blue-darker { background-color: var(--avas-blue-darker); }
 .text-avas-blue { color: var(--avas-blue); }
 .border-avas-blue { border-color: var(--avas-blue); }
 .border-navy { border-color: var(--avas-blue); }
@@ -203,29 +201,29 @@
 .hover\:bg-navy:hover { background-color: var(--avas-blue); }
 .hover\:bg-navy-light:hover { background-color: var(--avas-blue-light); }
 .hover\:text-navy:hover { color: var(--avas-blue); }
-.focus\:ring-navy\/20:focus { --tw-ring-color: rgba(82, 113, 255, 0.2); }
-.focus\:ring-navy\/20 { --tw-ring-color: rgba(82, 113, 255, 0.2); }
+.focus\:ring-navy\/20:focus { --tw-ring-color: rgba(45, 78, 216, 0.2); }
+.focus\:ring-navy\/20 { --tw-ring-color: rgba(45, 78, 216, 0.2); }
 
 /* Apple frosted glass */
 .glass {
-  background: rgba(245, 245, 247, 0.72);
+  background: rgba(255, 255, 255, 0.78);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
 
 .glass-dark {
-  background: rgba(28, 28, 30, 0.72);
+  background: rgba(28, 28, 30, 0.78);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
 }
 
 /* iOS-style soft shadows */
-.shadow-apple { box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06); }
-.shadow-apple-md { box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04); }
-.shadow-apple-lg { box-shadow: 0 12px 32px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06); }
-.shadow-apple-xl { box-shadow: 0 24px 60px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.08); }
+.shadow-apple { box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06); }
+.shadow-apple-md { box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04); }
+.shadow-apple-lg { box-shadow: 0 8px 24px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04); }
+.shadow-apple-xl { box-shadow: 0 16px 48px rgba(0,0,0,0.10), 0 4px 16px rgba(0,0,0,0.06); }
 
-/* Live pulse — enhanced visibility */
+/* Live pulse */
 @keyframes live-pulse {
   0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
   50% { opacity: 0.85; transform: scale(1.05); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
@@ -258,9 +256,7 @@
   0% { transform: scale(1); opacity: 0.8; }
   100% { transform: scale(2.5); opacity: 0; }
 }
-.ring-pulse {
-  animation: ring-pulse 1.5s ease-out infinite;
-}
+.ring-pulse { animation: ring-pulse 1.5s ease-out infinite; }
 
 /* Shimmer */
 @keyframes shimmer {
@@ -268,32 +264,32 @@
   100% { background-position: 1000px 0; }
 }
 .shimmer {
-  background: linear-gradient(90deg, #f5f5f7 0%, #ebebed 50%, #f5f5f7 100%);
+  background: linear-gradient(90deg, #f0f0f3 0%, #e4e4e8 50%, #f0f0f3 100%);
   background-size: 1000px 100%;
   animation: shimmer 2s linear infinite;
 }
 
-/* Navy/blue sidebar */
+/* Sidebar — deep navy-blue gradient for proper white text contrast */
 .sidebar-navy {
-  background: linear-gradient(180deg, #5271ff 0%, #3e5bff 100%);
+  background: linear-gradient(180deg, #1e3a8a 0%, #172554 100%);
 }
 .sidebar-navy .nav-item-active {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.16);
   color: #ffffff;
-  border-left: 2px solid #ffffff;
+  border-left: 3px solid #ffffff;
 }
 
 .card-apple {
-  border: 1px solid #e5e5ea;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+  border: 1px solid #e2e2e6;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
 }
 .card-apple:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .focus-gold:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.35);
+  box-shadow: 0 0 0 3px rgba(45, 78, 216, 0.25);
 }
 
 .btn-press {
@@ -313,14 +309,14 @@
 }
 .animate-scale-in { animation: scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 
-/* iMessage-style bubbles */
+/* iMessage-style bubbles — deeper blue for white text contrast */
 .msg-bubble-sent {
-  background: var(--avas-blue);
-  color: white;
+  background: #2d4ed8;
+  color: #ffffff;
   border-radius: 20px 20px 4px 20px;
 }
 .msg-bubble-recv {
-  background: #e9e9eb;
+  background: #eaeaee;
   color: #1d1d1f;
   border-radius: 20px 20px 20px 4px;
 }
@@ -335,8 +331,8 @@
 .typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
 .file-card {
-  background: rgba(0,0,0,0.04);
-  border: 1px solid rgba(0,0,0,0.06);
+  background: rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.08);
   border-radius: 12px;
   transition: all 0.15s ease;
 }
@@ -347,7 +343,7 @@
   appearance: none;
   width: 51px;
   height: 31px;
-  background: #e9e9eb;
+  background: #d1d1d6;
   border: none;
   border-radius: 31px;
   position: relative;

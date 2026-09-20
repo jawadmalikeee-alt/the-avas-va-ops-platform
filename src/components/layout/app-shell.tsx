@@ -155,7 +155,7 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
           {groupedNav.map((g) => (
             <div key={g.group}>
               {!collapsed && (
-                <div className="px-2.5 mb-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-white/30">{g.group}</div>
+                <div className="px-2.5 mb-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-white/60">{g.group}</div>
               )}
               <div className="space-y-1">
                 {g.items.map((item) => {
@@ -166,14 +166,14 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
                       onClick={() => setActiveView(item.id)}
                       title={collapsed ? item.label : undefined}
                       className={cn(
-                        'group flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm transition-all w-full btn-press',
+                        'group flex items-center gap-2.5 rounded-xl px-2.5 py-2.5 text-sm transition-all w-full btn-press',
                         collapsed && 'justify-center px-0',
                         active
-                          ? 'bg-white/20 text-white font-semibold ring-1 ring-white/30'
-                          : 'text-white/70 hover:bg-white/10 hover:text-white'
+                          ? 'bg-white text-avas-blue font-bold shadow-apple'
+                          : 'text-white/85 hover:bg-white/10 hover:text-white font-medium'
                       )}
                     >
-                      <item.icon className={cn('h-4 w-4 shrink-0', active && 'text-white')} />
+                      <item.icon className={cn('h-[18px] w-[18px] shrink-0', active ? 'text-avas-blue' : 'text-white/80')} />
                       {!collapsed && <span className="truncate">{item.label}</span>}
                       {!collapsed && item.badge && (
                         <Badge className="ml-auto h-5 px-1.5 text-[10px] bg-gold text-navy">{item.badge}</Badge>
@@ -219,8 +219,8 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
             <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-4">
               {groupedNav.map((g) => (
                 <div key={g.group}>
-                  <div className="px-2.5 mb-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-white/30">{g.group}</div>
-                  <div className="space-y-0.5">
+                  <div className="px-2.5 mb-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-white/60">{g.group}</div>
+                  <div className="space-y-1">
                     {g.items.map((item) => {
                       const active = activeView === item.id
                       return (
@@ -228,8 +228,8 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
                           key={item.id}
                           onClick={() => { setActiveView(item.id); setMobileOpen(false) }}
                           className={cn(
-                            'flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm w-full',
-                            active ? 'bg-white/20 text-white font-semibold ring-1 ring-white/30' : 'text-white/70 hover:bg-white/10 hover:text-white'
+                            'flex items-center gap-2.5 rounded-xl px-2.5 py-2.5 text-sm w-full',
+                            active ? 'bg-white text-avas-blue font-bold shadow-apple' : 'text-white/85 hover:bg-white/10 hover:text-white font-medium'
                           )}
                         >
                           <item.icon className="h-4 w-4 shrink-0" />
