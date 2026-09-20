@@ -82,8 +82,8 @@ export function VADashboard() {
   return (
     <div className="space-y-6 pb-16 md:pb-6">
       <div>
-        <h1 className="text-2xl font-display font-semibold tracking-tight">{greeting}, {user?.name.split(' ')[0]}.</h1>
-        <p className="text-sm text-muted-foreground mt-1">Here's what you need to focus on today.</p>
+        <h1 className="text-3xl font-display tracking-tight">{greeting}, {user?.name.split(' ')[0]}.</h1>
+        <p className="text-sm text-muted-foreground mt-2">Here's what you need to focus on today.</p>
       </div>
 
       {/* Time tracker card */}

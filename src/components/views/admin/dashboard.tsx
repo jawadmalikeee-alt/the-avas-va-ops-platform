@@ -98,10 +98,10 @@ export function AdminDashboard() {
     <div className="space-y-6 pb-16 md:pb-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-display font-bold tracking-tight text-navy">
+        <h1 className="text-3xl font-display tracking-tight text-navy">
           {greeting}, {user?.name.split(' ')[0]}.
         </h1>
-        <p className="text-sm text-muted-foreground mt-1">Here's what's happening across all client operations today.</p>
+        <p className="text-sm text-muted-foreground mt-2">Here's what's happening across all client operations today.</p>
       </div>
 
       {/* Today's Operations — prioritized metrics */}

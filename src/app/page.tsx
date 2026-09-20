@@ -35,7 +35,6 @@ import { ClientServices } from '@/components/views/client/services'
 import { ClientReports } from '@/components/views/client/reports'
 import { ClientQuality } from '@/components/views/client/quality'
 import { ClientDocuments } from '@/components/views/client/documents'
-import { ClientMessages } from '@/components/views/client/messages'
 import { ClientRequests } from '@/components/views/client/requests'
 import { ClientAccount } from '@/components/views/client/account'
 
@@ -47,9 +46,11 @@ import { VASubmission } from '@/components/views/va/submission'
 import { VAReports } from '@/components/views/va/reports'
 import { VAFeedback } from '@/components/views/va/feedback'
 import { VADocuments } from '@/components/views/va/documents'
-import { VAMessages } from '@/components/views/va/messages'
 import { VANotifications } from '@/components/views/va/notifications'
 import { VAProfile } from '@/components/views/va/profile'
+
+// Shared chat interface for all roles
+import { ChatInterface } from '@/components/views/chat-interface'
 
 function AdminView({ view }: { view: string }) {
   switch (view) {
@@ -63,7 +64,7 @@ function AdminView({ view }: { view: string }) {
     case 'services': return <AdminServices />
     case 'qa': return <AdminQA />
     case 'reports': return <AdminReports />
-    case 'communication': return <AdminCommunication />
+    case 'communication': return <ChatInterface />
     case 'documents': return <AdminDocuments />
     case 'billing': return <AdminBilling />
     case 'analytics': return <AdminAnalytics />
@@ -84,7 +85,7 @@ function ClientView({ view }: { view: string }) {
     case 'reports': return <ClientReports />
     case 'quality': return <ClientQuality />
     case 'documents': return <ClientDocuments />
-    case 'messages': return <ClientMessages />
+    case 'messages': return <ChatInterface />
     case 'requests': return <ClientRequests />
     case 'account': return <ClientAccount />
     default: return <ClientOverview />
@@ -101,7 +102,7 @@ function VAView({ view }: { view: string }) {
     case 'reports': return <VAReports />
     case 'feedback': return <VAFeedback />
     case 'documents': return <VADocuments />
-    case 'messages': return <VAMessages />
+    case 'messages': return <ChatInterface />
     case 'notifications': return <VANotifications />
     case 'profile': return <VAProfile />
     default: return <VADashboard />

@@ -15,7 +15,10 @@ export const metadata: Metadata = {
   keywords: ["The AVAS", "Virtual Assistant", "Real Estate VA", "Operations Platform", "Enterprise SaaS", "CRM", "Cold Calling"],
   authors: [{ name: "The AVAS" }],
   icons: {
-    icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='4' fill='%231a1f3d'/%3E%3Cpath d='M7 16L12 6L17 16M9 13H15' stroke='%23c9a961' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E",
+    icon: [
+      { url: "/avas-icon.svg", type: "image/svg+xml" },
+    ],
+    apple: "/avas-icon.svg",
   },
   openGraph: {
     title: "The AVAS — Real Estate VA Operations Platform",
