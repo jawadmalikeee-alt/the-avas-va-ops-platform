@@ -52,3 +52,19 @@ prompt
 server.log
 # Skills directory
 /skills/
+# AVAS project specifics
+.env
+.env.local
+.env.production
+db/*.db
+db/*.db-journal
+dev.log
+server.log
+public/uploads/*
+!public/uploads/.gitkeep
+upload/*
+skills/
+.zscripts/
+tests/
+mini-services/
+examples/
