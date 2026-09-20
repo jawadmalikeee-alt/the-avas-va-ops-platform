@@ -19,7 +19,7 @@ export function Brand({ size = 'md', variant = 'default', showText = true, class
       />
       {showText && (
         <div className="leading-none">
-          <div className={cn('font-display tracking-tight', textSize, variant === 'light' ? 'text-white' : 'text-navy')}>
+          <div className={cn('font-display tracking-tight', textSize, variant === 'light' ? 'text-white' : 'text-avas-blue')}>
             THE AVAS
           </div>
           <div className={cn('font-medium uppercase tracking-[0.18em] mt-0.5', subSize, variant === 'light' ? 'text-white/50' : 'text-muted-foreground')}>

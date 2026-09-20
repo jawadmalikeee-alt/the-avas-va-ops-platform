@@ -114,6 +114,30 @@ export function ChatInterface() {
   useEffect(() => { loadPartners() }, [])
   useEffect(() => { if (activePartner) loadMessages() }, [activePartner])
 
+  // Listen for incoming call accepted event (from IncomingCallListener overlay)
+  useEffect(() => {
+    const handler = (e: any) => {
+      const call = e.detail
+      if (call?.roomUrl) {
+        setMeetingUrl(call.roomUrl)
+        setShowCall(call.type === 'video' ? 'video' : 'audio')
+        // Also set the partner info so the modal shows the caller's details
+        if (call.callerName) {
+          setPartnerInfo({
+            id: call.callerId,
+            name: call.callerName,
+            avatarUrl: call.callerAvatarUrl,
+            role: '',
+            unreadCount: 0,
+            status: 'Online',
+          })
+        }
+      }
+    }
+    window.addEventListener('avas:incoming-call-accepted', handler)
+    return () => window.removeEventListener('avas:incoming-call-accepted', handler)
+  }, [])
+
   // Auto-refresh messages every 3s when chat is open
   useEffect(() => {
     if (!activePartner) return
@@ -195,16 +219,17 @@ export function ChatInterface() {
   const startCall = async (type: 'audio' | 'video') => {
     if (!activePartner) return
     try {
-      const res = await fetch('/api/meeting', {
+      // Create a real call session — the receiver will be notified via polling + push notification
+      const res = await fetch('/api/calls/initiate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ partnerId: activePartner, type }),
       })
       const d = await res.json()
       if (!res.ok) { toast(d.error ?? 'Failed to start call', 'error'); return }
-      setMeetingUrl(d.url)
+      setMeetingUrl(d.call.roomUrl)
       setShowCall(type)
-      toast(`${type === 'video' ? 'Video' : 'Audio'} call started — ${d.partnerName} notified`, 'success')
+      toast(`📞 Ringing ${d.call.partnerName}…`, 'info')
     } catch {
       toast('Failed to start call', 'error')
     }
@@ -591,23 +616,32 @@ export function EmailComposer({ open, setOpen, recipient }: { open: boolean; set
 
   const send = async () => {
     if (!to || !subject) { toast('Recipient and subject required', 'error'); return }
+    if (!recipient?.id) { toast('No recipient selected', 'error'); return }
     setSending(true)
     try {
-      // Log email as a message in conversation
-      await fetch('/api/messages', {
+      // Send via real email API — logs to DB, creates message in conversation, notifies recipient
+      const res = await fetch('/api/emails/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          receiverId: recipient?.id,
-          body: `📧 ${subject}\n\n${body}`,
-          attachmentType: 'email',
-          attachmentName: subject,
+          receiverId: recipient.id,
+          toEmail: to,
+          subject,
+          body,
         }),
       })
-      const mailto = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-      window.open(mailto, '_blank')
-      toast('Email drafted & logged in conversation', 'success')
+      const d = await res.json()
+      if (!res.ok) { toast(d.error ?? 'Failed to send email', 'error'); return }
+
+      // Also open default mail client for direct SMTP send
+      if (d.mailtoUrl) {
+        window.open(d.mailtoUrl, '_blank')
+      }
+
+      toast('Email sent & recipient notified', 'success')
       setOpen(false)
+      // Reload messages to show the email in conversation
+      window.location.reload()
     } catch {
       toast('Failed to send email', 'error')
     } finally { setSending(false) }

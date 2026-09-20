@@ -72,7 +72,7 @@ export function LoginScreen() {
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password" className="text-xs font-semibold text-muted-foreground">Password</Label>
-                <button type="button" className="text-[11px] text-navy hover:underline font-medium">Forgot?</button>
+                <button type="button" className="text-[11px] text-avas-blue hover:underline font-medium">Forgot?</button>
               </div>
               <Input
                 id="password"
@@ -119,16 +119,16 @@ export function LoginScreen() {
         </div>
       </div>
 
-      {/* Right side: Apple-inspired hero */}
-      <div className="hidden lg:flex flex-1 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1a1f3d 0%, #11152b 60%, #0a0d1f 100%)' }}>
-        <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
-        <div className="absolute top-20 right-20 w-96 h-96 rounded-full" style={{ background: 'radial-gradient(circle, rgba(201,169,97,0.18) 0%, transparent 70%)' }} />
-        <div className="absolute bottom-20 left-20 w-80 h-80 rounded-full" style={{ background: 'radial-gradient(circle, rgba(201,169,97,0.10) 0%, transparent 70%)' }} />
+      {/* Right side: Apple-inspired hero with AVAS blue */}
+      <div className="hidden lg:flex flex-1 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #5271ff 0%, #3e5bff 60%, #2a3fcc 100%)' }}>
+        <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+        <div className="absolute top-20 right-20 w-96 h-96 rounded-full" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 70%)' }} />
+        <div className="absolute bottom-20 left-20 w-80 h-80 rounded-full" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.10) 0%, transparent 70%)' }} />
 
         <div className="relative flex flex-col justify-between px-16 py-12 w-full">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/5 ring-1 ring-white/10 px-3 py-1 text-[11px] text-white/70 mb-12">
-              <span className="h-1.5 w-1.5 rounded-full bg-gold live-pulse" />
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 ring-1 ring-white/20 px-3 py-1 text-[11px] text-white mb-12">
+              <span className="h-1.5 w-1.5 rounded-full bg-white live-pulse" />
               Enterprise-grade VA operations platform
             </div>
 
@@ -148,7 +148,7 @@ export function LoginScreen() {
           </div>
 
           <div className="mt-12 pt-8 border-t border-white/10">
-            <div className="text-[10px] uppercase tracking-widest text-gold mb-3 font-semibold">What you get</div>
+            <div className="text-[10px] uppercase tracking-widest text-white mb-3 font-semibold">What you get</div>
             <div className="grid grid-cols-2 gap-x-8 gap-y-3 max-w-md">
               <Feature icon={Clock} title="Real-time operations" desc="Live VA status & timers" />
               <Feature icon={BarChart3} title="Configurable KPIs & QA" desc="Track what matters" />
@@ -182,12 +182,12 @@ function StatCard({ value, label }: { value: string; label: string }) {
 function Feature({ icon: Icon, title, desc }: { icon: React.ComponentType<{ className?: string }>; title: string; desc: string }) {
   return (
     <div className="flex gap-2.5">
-      <div className="h-8 w-8 rounded-xl bg-gold/10 ring-1 ring-gold/20 flex items-center justify-center shrink-0">
-        <Icon className="h-4 w-4 text-gold" />
+      <div className="h-8 w-8 rounded-xl bg-white/10 ring-1 ring-white/20 flex items-center justify-center shrink-0">
+        <Icon className="h-4 w-4 text-white" />
       </div>
       <div>
         <p className="text-xs text-white font-semibold">{title}</p>
-        <p className="text-[10px] text-white/40 mt-0.5">{desc}</p>
+        <p className="text-[10px] text-white/60 mt-0.5">{desc}</p>
       </div>
     </div>
   )

@@ -52,6 +52,8 @@ import { VAProfile } from '@/components/views/va/profile'
 // Shared chat interface and profile editor for all roles
 import { ChatInterface } from '@/components/views/chat-interface'
 import { ProfileEditor } from '@/components/views/profile-editor'
+import { IncomingCallListener } from '@/components/call-listener'
+import { useState } from 'react'
 
 function AdminView({ view }: { view: string }) {
   switch (view) {
@@ -151,6 +153,16 @@ export default function Page() {
       <AppShell activeView={view} setActiveView={setView}>
         {user.role === 'CLIENT' ? <ClientView view={view} /> : user.role === 'VA' ? <VAView view={view} /> : <AdminView view={view} />}
       </AppShell>
+      <IncomingCallListener
+        onCallAccepted={(call) => {
+          // Force navigation to messages so the chat opens with the call modal
+          setView('messages')
+          // Reload to trigger the call modal with the meeting URL
+          setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('avas:incoming-call-accepted', { detail: call }))
+          }, 100)
+        }}
+      />
       <ToastContainer />
     </>
   )

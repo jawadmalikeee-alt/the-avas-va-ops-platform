@@ -42,6 +42,10 @@ model User {
   tasksCreated  Task[]      @relation("TaskCreator")
   tickets       Ticket[]
   assignments  Assignment[] @relation("AssignmentUser")
+  callsMade     CallSession[] @relation("CallCaller")
+  callsReceived CallSession[] @relation("CallReceiver")
+  emailsSent    EmailLog[]  @relation("EmailSender")
+  emailsReceived EmailLog[] @relation("EmailReceiver")
 }
 
 enum UserRole {
@@ -537,4 +541,43 @@ model Report {
   config     String   // JSON config
   createdBy String
   createdAt  DateTime @default(now())
+}
+
+// ============================================
+// CALLS — incoming/outgoing audio+video call sessions
+// ============================================
+
+model CallSession {
+  id         String   @id @default(cuid())
+  callerId   String
+  receiverId String
+  type       String   // 'audio' | 'video'
+  roomId     String
+  roomUrl    String
+  status     String   @default("ringing") // ringing, accepted, declined, missed, ended
+  startedAt  DateTime?
+  endedAt    DateTime?
+  duration   Int?     // seconds
+  createdAt  DateTime @default(now())
+
+  caller     User     @relation("CallCaller", fields: [callerId], references: [id])
+  receiver   User     @relation("CallReceiver", fields: [receiverId], references: [id])
+}
+
+// ============================================
+// EMAILS — logged outbound emails
+// ============================================
+
+model EmailLog {
+  id         String   @id @default(cuid())
+  senderId   String
+  receiverId String
+  toEmail    String
+  subject    String
+  body       String
+  status     String   @default("queued") // queued, sent, failed
+  createdAt  DateTime @default(now())
+
+  sender     User     @relation("EmailSender", fields: [senderId], references: [id])
+  receiver   User     @relation("EmailReceiver", fields: [receiverId], references: [id])
 }

@@ -37,8 +37,10 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --color-navy: var(--navy);
-  --color-navy-light: var(--navy-light);
+  --color-navy: var(--avas-blue);
+  --color-navy-light: var(--avas-blue-light);
+  --color-avas-blue: var(--avas-blue);
+  --color-avas-blue-light: var(--avas-blue-light);
   --color-gold: var(--gold);
   --color-gold-light: var(--gold-light);
   /* Apple-style radii */
@@ -50,13 +52,19 @@
 }
 
 :root {
-  /* The AVAS brand palette */
-  --navy: #1a1f3d;
-  --navy-light: #2a3158;
-  --navy-deep: #11152b;
+  /* AVAS official brand blue (extracted from logo) */
+  --avas-blue: #5271ff;
+  --avas-blue-light: #6b86ff;
+  --avas-blue-deep: #3e5bff;
+  --avas-blue-dark: #2a3fcc;
   --gold: #c9a961;
   --gold-light: #e0c987;
   --gold-dark: #a8893f;
+
+  /* Keep navy as alias for backwards compat — now maps to AVAS blue */
+  --navy: var(--avas-blue);
+  --navy-light: var(--avas-blue-light);
+  --navy-deep: var(--avas-blue-dark);
 
   /* Apple-inspired surface tokens */
   --background: #f5f5f7;
@@ -65,31 +73,31 @@
   --card-foreground: #1d1d1f;
   --popover: #ffffff;
   --popover-foreground: #1d1d1f;
-  --primary: #1a1f3d;
+  --primary: #5271ff;
   --primary-foreground: #ffffff;
   --secondary: #f5f5f7;
-  --secondary-foreground: #1a1f3d;
+  --secondary-foreground: #5271ff;
   --muted: #f5f5f7;
   --muted-foreground: #6e6e73;
   --accent: #f5f5f7;
-  --accent-foreground: #1a1f3d;
+  --accent-foreground: #5271ff;
   --destructive: #ff3b30;
   --border: #e5e5ea;
   --input: #e5e5ea;
-  --ring: #1a1f3d;
-  --chart-1: #1a1f3d;
+  --ring: #5271ff;
+  --chart-1: #5271ff;
   --chart-2: #10b981;
   --chart-3: #c9a961;
   --chart-4: #ff9500;
   --chart-5: #5856d6;
   --sidebar: #ffffff;
-  --sidebar-foreground: #1a1f3d;
-  --sidebar-primary: #1a1f3d;
+  --sidebar-foreground: #1d1d1f;
+  --sidebar-primary: #5271ff;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #f5f5f7;
-  --sidebar-accent-foreground: #1a1f3d;
+  --sidebar-accent-foreground: #5271ff;
   --sidebar-border: #e5e5ea;
-  --sidebar-ring: #1a1f3d;
+  --sidebar-ring: #5271ff;
 }
 
 .dark {
@@ -99,8 +107,8 @@
   --card-foreground: #f5f5f7;
   --popover: #1c1c1e;
   --popover-foreground: #f5f5f7;
-  --primary: #f5f5f7;
-  --primary-foreground: #1a1f3d;
+  --primary: #6b86ff;
+  --primary-foreground: #1d1d1f;
   --secondary: #2c2c2e;
   --secondary-foreground: #f5f5f7;
   --muted: #2c2c2e;
@@ -110,45 +118,40 @@
   --destructive: #ff453a;
   --border: #38383a;
   --input: #38383a;
-  --ring: #c9a961;
-  --chart-1: #c9a961;
+  --ring: #6b86ff;
+  --chart-1: #6b86ff;
   --chart-2: #10b981;
   --chart-3: #ff9500;
   --chart-4: #5856d6;
   --chart-5: #ff3b30;
   --sidebar: #1c1c1e;
   --sidebar-foreground: #f5f5f7;
-  --sidebar-primary: #c9a961;
+  --sidebar-primary: #6b86ff;
   --sidebar-primary-foreground: #1c1c1e;
   --sidebar-accent: #2c2c2e;
   --sidebar-accent-foreground: #f5f5f7;
   --sidebar-border: #38383a;
-  --sidebar-ring: #c9a961;
+  --sidebar-ring: #6b86ff;
 }
 
 @layer base {
   * {
     @apply border-border;
-    /* iOS-style font rendering */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
   body {
-    /* iOS system font stack — SF Pro on Apple devices, fallback to Inter */
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Inter", system-ui, sans-serif;
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "ss01", "cv01", "cv11";
-    /* iOS-style tabular numbers for metrics */
     font-variant-numeric: tabular-nums;
   }
   ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
   }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
+  ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
     background: rgba(0,0,0,0.15);
     border-radius: 8px;
@@ -162,7 +165,7 @@
   }
 }
 
-/* SF Pro-like display font with tighter letter spacing */
+/* SF Pro-like display font */
 .font-display {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", "Inter", system-ui, sans-serif;
   font-feature-settings: "ss01", "cv11";
@@ -170,34 +173,40 @@
   font-weight: 600;
 }
 
-/* SF Pro Text for body copy */
 .font-text {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Inter", system-ui, sans-serif;
 }
 
-/* SF Mono for tabular/timer displays */
 .font-mono {
   font-family: "SF Mono", "SF Pro Text", ui-monospace, "Menlo", "Monaco", monospace;
   font-variant-numeric: tabular-nums;
 }
 
-.tabular-nums {
-  font-variant-numeric: tabular-nums;
-}
+.tabular-nums { font-variant-numeric: tabular-nums; }
 
-/* AVAS brand utilities */
-.bg-navy { background-color: var(--navy); }
-.bg-navy-light { background-color: var(--navy-light); }
-.bg-navy-deep { background-color: var(--navy-deep); }
-.text-navy { color: var(--navy); }
+/* AVAS brand utilities — blue is primary, gold is accent */
+.bg-navy { background-color: var(--avas-blue); }
+.bg-navy-light { background-color: var(--avas-blue-light); }
+.bg-navy-deep { background-color: var(--avas-blue-deep); }
+.text-navy { color: var(--avas-blue); }
+.bg-avas-blue { background-color: var(--avas-blue); }
+.bg-avas-blue-light { background-color: var(--avas-blue-light); }
+.bg-avas-blue-deep { background-color: var(--avas-blue-deep); }
+.text-avas-blue { color: var(--avas-blue); }
+.border-avas-blue { border-color: var(--avas-blue); }
+.border-navy { border-color: var(--avas-blue); }
 .text-gold { color: var(--gold); }
 .bg-gold { background-color: var(--gold); }
 .bg-gold-light { background-color: var(--gold-light); }
-.border-navy { border-color: var(--navy); }
 .border-gold { border-color: var(--gold); }
 .ring-gold { --tw-ring-color: var(--gold); }
+.hover\:bg-navy:hover { background-color: var(--avas-blue); }
+.hover\:bg-navy-light:hover { background-color: var(--avas-blue-light); }
+.hover\:text-navy:hover { color: var(--avas-blue); }
+.focus\:ring-navy\/20:focus { --tw-ring-color: rgba(82, 113, 255, 0.2); }
+.focus\:ring-navy\/20 { --tw-ring-color: rgba(82, 113, 255, 0.2); }
 
-/* Apple frosted glass effects */
+/* Apple frosted glass */
 .glass {
   background: rgba(245, 245, 247, 0.72);
   backdrop-filter: saturate(180%) blur(20px);
@@ -211,49 +220,49 @@
 }
 
 /* iOS-style soft shadows */
-.shadow-apple {
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
-}
-
-.shadow-apple-md {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
-}
-
-.shadow-apple-lg {
-  box-shadow: 0 12px 32px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06);
-}
-
-.shadow-apple-xl {
-  box-shadow: 0 24px 60px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.08);
-}
+.shadow-apple { box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06); }
+.shadow-apple-md { box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04); }
+.shadow-apple-lg { box-shadow: 0 12px 32px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.06); }
+.shadow-apple-xl { box-shadow: 0 24px 60px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.08); }
 
 /* Live pulse — enhanced visibility */
 @keyframes live-pulse {
   0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
   50% { opacity: 0.85; transform: scale(1.05); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
 }
-.live-pulse {
-  animation: live-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
+.live-pulse { animation: live-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
 @keyframes live-glow {
   0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6), 0 0 12px 2px rgba(16, 185, 129, 0.4); }
   50% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0), 0 0 24px 4px rgba(16, 185, 129, 0.6); }
 }
-.live-glow {
-  animation: live-glow 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
+.live-glow { animation: live-glow 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 
-/* Live badge ribbon */
 @keyframes badge-pulse {
   0%, 100% { background-color: #10b981; transform: scale(1); }
   50% { background-color: #059669; transform: scale(1.08); }
 }
-.badge-pulse {
-  animation: badge-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.badge-pulse { animation: badge-pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+
+/* Incoming call ring animation */
+@keyframes ring-shake {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(-12deg); }
+  40% { transform: rotate(12deg); }
+  60% { transform: rotate(-8deg); }
+  80% { transform: rotate(8deg); }
+}
+.ring-shake { animation: ring-shake 0.8s ease-in-out infinite; }
+
+@keyframes ring-pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+.ring-pulse {
+  animation: ring-pulse 1.5s ease-out infinite;
 }
 
-/* Shimmer for skeletons */
+/* Shimmer */
 @keyframes shimmer {
   0% { background-position: -1000px 0; }
   100% { background-position: 1000px 0; }
@@ -264,17 +273,16 @@
   animation: shimmer 2s linear infinite;
 }
 
-/* Navy sidebar */
+/* Navy/blue sidebar */
 .sidebar-navy {
-  background: linear-gradient(180deg, #1a1f3d 0%, #11152b 100%);
+  background: linear-gradient(180deg, #5271ff 0%, #3e5bff 100%);
 }
 .sidebar-navy .nav-item-active {
-  background: rgba(201, 169, 97, 0.15);
-  color: #c9a961;
-  border-left: 2px solid #c9a961;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-left: 2px solid #ffffff;
 }
 
-/* Premium card */
 .card-apple {
   border: 1px solid #e5e5ea;
   box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
@@ -283,40 +291,31 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
 }
 
-/* Focus ring premium */
 .focus-gold:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.35);
 }
 
-/* iOS-style press animation */
 .btn-press {
   transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.btn-press:active {
-  transform: scale(0.96);
-}
+.btn-press:active { transform: scale(0.96); }
 
-/* Slide-in animations */
 @keyframes slide-up {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.animate-slide-up {
-  animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
+.animate-slide-up { animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 
 @keyframes scale-in {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
-.animate-scale-in {
-  animation: scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
+.animate-scale-in { animation: scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 
 /* iMessage-style bubbles */
 .msg-bubble-sent {
-  background: var(--navy);
+  background: var(--avas-blue);
   color: white;
   border-radius: 20px 20px 4px 20px;
 }
@@ -326,27 +325,22 @@
   border-radius: 20px 20px 20px 4px;
 }
 
-/* Typing indicator dots */
+/* Typing indicator */
 @keyframes typing-bounce {
   0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
   30% { transform: translateY(-4px); opacity: 1; }
 }
-.typing-dot {
-  animation: typing-bounce 1.4s infinite;
-}
+.typing-dot { animation: typing-bounce 1.4s infinite; }
 .typing-dot:nth-child(2) { animation-delay: 0.2s; }
 .typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
-/* File attachment card */
 .file-card {
   background: rgba(0,0,0,0.04);
   border: 1px solid rgba(0,0,0,0.06);
   border-radius: 12px;
   transition: all 0.15s ease;
 }
-.file-card:hover {
-  background: rgba(0,0,0,0.06);
-}
+.file-card:hover { background: rgba(0,0,0,0.06); }
 
 /* iOS toggle switch */
 .ios-switch {
@@ -372,9 +366,5 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   transition: transform 0.2s ease;
 }
-.ios-switch:checked {
-  background: #34c759;
-}
-.ios-switch:checked::after {
-  transform: translateX(20px);
-}
+.ios-switch:checked { background: #34c759; }
+.ios-switch:checked::after { transform: translateX(20px); }

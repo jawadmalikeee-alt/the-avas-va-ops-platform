@@ -1,15 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- AVAS official logo — brand blue background (#5271FF) with white A letterform -->
   <defs>
-    <linearGradient id="navyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1a1f3d"/>
-      <stop offset="100%" stop-color="#0a0d1f"/>
-    </linearGradient>
-    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#e0c987"/>
-      <stop offset="100%" stop-color="#c9a961"/>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5271FF"/>
+      <stop offset="100%" stop-color="#3E5BFF"/>
     </linearGradient>
   </defs>
-  <rect width="512" height="512" rx="112" fill="url(#navyGrad)"/>
-  <!-- A letterform -->
-  <path d="M 152 372 L 256 132 L 360 372 M 196 312 L 316 312" stroke="url(#goldGrad)" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <rect width="512" height="512" rx="112" fill="url(#blueGrad)"/>
+  <!-- A letterform in white -->
+  <path d="M 152 372 L 256 132 L 360 372 M 196 312 L 316 312" stroke="#ffffff" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
 </svg>

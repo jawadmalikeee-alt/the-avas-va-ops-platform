@@ -133,18 +133,18 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
         <div className={cn('flex items-center h-16 px-4 border-b border-white/10', collapsed && 'justify-center px-0')}>
           {collapsed ? (
             <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-              <rect width="32" height="32" rx="6" fill="#1a1f3d" />
-              <path d="M9 22L16 8L23 22M12 17H20" stroke="#c9a961" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+              <rect width="32" height="32" rx="7" fill="#ffffff" />
+              <path d="M9 22L16 8L23 22M12 17H20" stroke="#5271ff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           ) : (
             <div className="flex items-center gap-2.5">
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                <rect width="32" height="32" rx="6" fill="#0a0d1f" stroke="rgba(201,169,97,0.3)" />
-                <path d="M9 22L16 8L23 22M12 17H20" stroke="#c9a961" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                <rect width="32" height="32" rx="7" fill="#ffffff" />
+                <path d="M9 22L16 8L23 22M12 17H20" stroke="#5271ff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <div className="leading-none">
                 <div className="text-sm font-display font-bold tracking-tight text-white">THE AVAS</div>
-                <div className="text-[9px] font-medium uppercase tracking-[0.18em] text-gold mt-0.5">VA Operations</div>
+                <div className="text-[9px] font-medium uppercase tracking-[0.18em] text-white/60 mt-0.5">VA Operations</div>
               </div>
             </div>
           )}
@@ -169,11 +169,11 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
                         'group flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm transition-all w-full btn-press',
                         collapsed && 'justify-center px-0',
                         active
-                          ? 'bg-gold/15 text-gold font-semibold ring-1 ring-gold/30'
-                          : 'text-white/60 hover:bg-white/5 hover:text-white'
+                          ? 'bg-white/20 text-white font-semibold ring-1 ring-white/30'
+                          : 'text-white/70 hover:bg-white/10 hover:text-white'
                       )}
                     >
-                      <item.icon className={cn('h-4 w-4 shrink-0', active && 'text-gold')} />
+                      <item.icon className={cn('h-4 w-4 shrink-0', active && 'text-white')} />
                       {!collapsed && <span className="truncate">{item.label}</span>}
                       {!collapsed && item.badge && (
                         <Badge className="ml-auto h-5 px-1.5 text-[10px] bg-gold text-navy">{item.badge}</Badge>
@@ -206,12 +206,12 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
             <div className="flex items-center justify-between h-16 px-4 border-b border-white/10">
               <div className="flex items-center gap-2.5">
                 <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                  <rect width="32" height="32" rx="6" fill="#0a0d1f" stroke="rgba(201,169,97,0.3)" />
-                  <path d="M9 22L16 8L23 22M12 17H20" stroke="#c9a961" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                  <rect width="32" height="32" rx="7" fill="#ffffff" />
+                  <path d="M9 22L16 8L23 22M12 17H20" stroke="#5271ff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <div className="leading-none">
                   <div className="text-sm font-display font-bold tracking-tight text-white">THE AVAS</div>
-                  <div className="text-[9px] font-medium uppercase tracking-[0.18em] text-gold mt-0.5">VA Operations</div>
+                  <div className="text-[9px] font-medium uppercase tracking-[0.18em] text-white/60 mt-0.5">VA Operations</div>
                 </div>
               </div>
               <button onClick={() => setMobileOpen(false)} className="text-white/60 hover:text-white"><X className="h-5 w-5" /></button>
@@ -228,8 +228,8 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
                           key={item.id}
                           onClick={() => { setActiveView(item.id); setMobileOpen(false) }}
                           className={cn(
-                            'flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm w-full',
-                            active ? 'bg-gold/10 text-gold font-medium ring-1 ring-gold/20' : 'text-white/60 hover:bg-white/5 hover:text-white'
+                            'flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm w-full',
+                            active ? 'bg-white/20 text-white font-semibold ring-1 ring-white/30' : 'text-white/70 hover:bg-white/10 hover:text-white'
                           )}
                         >
                           <item.icon className="h-4 w-4 shrink-0" />
