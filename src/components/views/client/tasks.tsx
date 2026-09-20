@@ -24,7 +24,7 @@ export function ClientTasks() {
   // Fetch client's tasks
   const [tasks, setTasks] = useState<any[]>([])
   useEffect(() => {
-    fetch('/api/data/admin-list?type=tasks', { cache: 'no-store' })
+    fetch('/api/tasks/list', { cache: 'no-store' })
       .then(r => r.json())
       .then(d => setTasks(d.items ?? []))
       .catch(() => {})

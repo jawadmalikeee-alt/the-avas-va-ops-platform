@@ -13,7 +13,7 @@ import {
   ShieldCheck, FileText, MessageSquare, FolderOpen, Receipt, BarChart3,
   Bell, Settings, ScrollText, Search, Plus, LogOut, ChevronLeft, ChevronRight,
   Menu, X, Command, User, Send, Calendar, FileCheck, ClipboardList, FileBarChart,
-  CheckCircle2, AlertTriangle, Info
+  CheckCircle2, AlertTriangle, Info, Radio, Building2, Phone
 } from 'lucide-react'
 import { toast } from '@/components/ui-primitives/toast'
 
@@ -21,58 +21,55 @@ import { toast } from '@/components/ui-primitives/toast'
 // NAV DEFINITIONS — per role
 // ============================================================
 
-type NavItem = { id: string; label: string; icon: React.ComponentType<{ className?: string }>; badge?: number }
+type NavItem = { id: string; label: string; icon: React.ComponentType<{ className?: string }>; badge?: number; group?: string }
 
 const ADMIN_NAV: NavItem[] = [
-  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'live', label: 'Live Operations', icon: Radio },
-  { id: 'clients', label: 'Clients', icon: Users },
-  { id: 'vas', label: 'VAs & Agents', icon: UserCog },
-  { id: 'assignments', label: 'Assignments', icon: GitBranch },
-  { id: 'time', label: 'Time & Attendance', icon: Clock3 },
-  { id: 'tasks', label: 'Tasks & Projects', icon: ListTodo },
-  { id: 'services', label: 'Service Delivery', icon: Package },
-  { id: 'qa', label: 'QA & Quality', icon: ShieldCheck },
-  { id: 'reports', label: 'Reports', icon: FileText },
-  { id: 'communication', label: 'Communication', icon: MessageSquare },
-  { id: 'documents', label: 'Documents', icon: FolderOpen },
-  { id: 'billing', label: 'Billing & Hours', icon: Receipt },
-  { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'settings', label: 'Settings', icon: Settings },
-  { id: 'audit', label: 'Audit Logs', icon: ScrollText },
+  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, group: 'Overview' },
+  { id: 'live', label: 'Live Operations', icon: Radio, group: 'Overview' },
+  { id: 'clients', label: 'Clients', icon: Users, group: 'Workforce' },
+  { id: 'vas', label: 'VAs & Agents', icon: UserCog, group: 'Workforce' },
+  { id: 'assignments', label: 'Assignments', icon: GitBranch, group: 'Workforce' },
+  { id: 'time', label: 'Time & Attendance', icon: Clock3, group: 'Operations' },
+  { id: 'tasks', label: 'Tasks & Projects', icon: ListTodo, group: 'Operations' },
+  { id: 'services', label: 'Service Delivery', icon: Package, group: 'Operations' },
+  { id: 'qa', label: 'QA & Quality', icon: ShieldCheck, group: 'Operations' },
+  { id: 'reports', label: 'Reports', icon: FileText, group: 'Insights' },
+  { id: 'analytics', label: 'Analytics', icon: BarChart3, group: 'Insights' },
+  { id: 'communication', label: 'Communication', icon: MessageSquare, group: 'Workspace' },
+  { id: 'documents', label: 'Documents', icon: FolderOpen, group: 'Workspace' },
+  { id: 'billing', label: 'Billing & Hours', icon: Receipt, group: 'Workspace' },
+  { id: 'notifications', label: 'Notifications', icon: Bell, group: 'System' },
+  { id: 'settings', label: 'Settings', icon: Settings, group: 'System' },
+  { id: 'audit', label: 'Audit Logs', icon: ScrollText, group: 'System' },
 ]
 
 const CLIENT_NAV: NavItem[] = [
-  { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-  { id: 'my-vas', label: 'My VAs', icon: UserCog },
-  { id: 'time', label: 'Time & Attendance', icon: Clock3 },
-  { id: 'tasks', label: 'Tasks', icon: ListTodo },
-  { id: 'services', label: 'Service Delivery', icon: Package },
-  { id: 'reports', label: 'Reports', icon: FileText },
-  { id: 'quality', label: 'Quality', icon: ShieldCheck },
-  { id: 'documents', label: 'Documents', icon: FolderOpen },
-  { id: 'messages', label: 'Messages', icon: MessageSquare },
-  { id: 'requests', label: 'Requests', icon: Send },
-  { id: 'account', label: 'Account', icon: Settings },
+  { id: 'overview', label: 'Overview', icon: LayoutDashboard, group: 'Main' },
+  { id: 'my-vas', label: 'My VAs', icon: UserCog, group: 'Main' },
+  { id: 'time', label: 'Time & Attendance', icon: Clock3, group: 'Main' },
+  { id: 'tasks', label: 'Tasks', icon: ListTodo, group: 'Work' },
+  { id: 'services', label: 'Service Delivery', icon: Package, group: 'Work' },
+  { id: 'reports', label: 'Reports', icon: FileText, group: 'Work' },
+  { id: 'quality', label: 'Quality', icon: ShieldCheck, group: 'Work' },
+  { id: 'documents', label: 'Documents', icon: FolderOpen, group: 'Workspace' },
+  { id: 'messages', label: 'Messages', icon: MessageSquare, group: 'Workspace' },
+  { id: 'requests', label: 'Requests', icon: Send, group: 'Workspace' },
+  { id: 'account', label: 'Account', icon: Settings, group: 'System' },
 ]
 
 const VA_NAV: NavItem[] = [
-  { id: 'dashboard', label: 'My Dashboard', icon: LayoutDashboard },
-  { id: 'tasks', label: 'My Tasks', icon: ListTodo },
-  { id: 'schedule', label: 'My Schedule', icon: Calendar },
-  { id: 'tracker', label: 'Time Tracker', icon: Clock3 },
-  { id: 'submission', label: 'Work Submission', icon: FileCheck },
-  { id: 'reports', label: 'Reports', icon: FileBarChart },
-  { id: 'feedback', label: 'QA & Feedback', icon: ShieldCheck },
-  { id: 'documents', label: 'Documents & SOPs', icon: ClipboardList },
-  { id: 'messages', label: 'Messages', icon: MessageSquare },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'profile', label: 'Profile', icon: User },
+  { id: 'dashboard', label: 'My Dashboard', icon: LayoutDashboard, group: 'Main' },
+  { id: 'tasks', label: 'My Tasks', icon: ListTodo, group: 'Main' },
+  { id: 'schedule', label: 'My Schedule', icon: Calendar, group: 'Main' },
+  { id: 'tracker', label: 'Time Tracker', icon: Clock3, group: 'Work' },
+  { id: 'submission', label: 'Work Submission', icon: FileCheck, group: 'Work' },
+  { id: 'reports', label: 'Reports', icon: FileBarChart, group: 'Work' },
+  { id: 'feedback', label: 'QA & Feedback', icon: ShieldCheck, group: 'Work' },
+  { id: 'documents', label: 'Documents & SOPs', icon: ClipboardList, group: 'Workspace' },
+  { id: 'messages', label: 'Messages', icon: MessageSquare, group: 'Workspace' },
+  { id: 'notifications', label: 'Notifications', icon: Bell, group: 'System' },
+  { id: 'profile', label: 'Profile', icon: User, group: 'System' },
 ]
-
-// Import Radio here to avoid circular issues
-import { Radio } from 'lucide-react'
 
 interface AppShellProps {
   activeView: string
@@ -91,7 +88,18 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
 
   const nav = user?.role === 'ADMIN' || user?.role === 'OPERATIONS_MANAGER' || user?.role === 'TEAM_LEAD' || user?.role === 'QA_MANAGER' ? ADMIN_NAV : user?.role === 'CLIENT' ? CLIENT_NAV : VA_NAV
 
-  // Keyboard shortcut for command palette
+  // Group nav by group field
+  const groupedNav: { group: string; items: NavItem[] }[] = []
+  let currentGroup = ''
+  nav.forEach((item) => {
+    const g = item.group ?? ''
+    if (g !== currentGroup) {
+      groupedNav.push({ group: g, items: [] })
+      currentGroup = g
+    }
+    groupedNav[groupedNav.length - 1].items.push(item)
+  })
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -109,58 +117,80 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
-  const greeting = (() => {
-    const hour = new Date().getHours()
-    if (hour < 12) return 'Good morning'
-    if (hour < 17) return 'Good afternoon'
-    return 'Good evening'
-  })()
-
   const roleLabel = user?.role === 'ADMIN' ? 'Admin Console' : user?.role === 'CLIENT' ? 'Client Portal' : 'VA Workspace'
+  const roleTagline = user?.role === 'ADMIN' ? 'Operations Command Center' : user?.role === 'CLIENT' ? 'Your VA Control Center' : 'Your Workspace'
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
-      {/* Sidebar — desktop */}
+      {/* Sidebar — desktop (corporate navy) */}
       <aside
         className={cn(
-          'hidden md:flex flex-col border-r border-border bg-sidebar shrink-0 transition-all duration-200',
-          collapsed ? 'w-[60px]' : 'w-[240px]'
+          'hidden md:flex flex-col shrink-0 transition-all duration-200 sidebar-navy',
+          collapsed ? 'w-[64px]' : 'w-[248px]'
         )}
       >
-        <div className={cn('flex items-center h-14 px-4 border-b border-border', collapsed && 'justify-center px-0')}>
-          {collapsed ? <Brand showText={false} /> : <Brand />}
+        {/* Brand header */}
+        <div className={cn('flex items-center h-16 px-4 border-b border-white/10', collapsed && 'justify-center px-0')}>
+          {collapsed ? (
+            <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+              <rect width="32" height="32" rx="6" fill="#1a1f3d" />
+              <path d="M9 22L16 8L23 22M12 17H20" stroke="#c9a961" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          ) : (
+            <div className="flex items-center gap-2.5">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <rect width="32" height="32" rx="6" fill="#0a0d1f" stroke="rgba(201,169,97,0.3)" />
+                <path d="M9 22L16 8L23 22M12 17H20" stroke="#c9a961" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <div className="leading-none">
+                <div className="text-sm font-display font-bold tracking-tight text-white">THE AVAS</div>
+                <div className="text-[9px] font-medium uppercase tracking-[0.18em] text-gold mt-0.5">VA Operations</div>
+              </div>
+            </div>
+          )}
         </div>
 
-        <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5">
-          {nav.map((item) => {
-            const active = activeView === item.id
-            return (
-              <button
-                key={item.id}
-                onClick={() => setActiveView(item.id)}
-                title={collapsed ? item.label : undefined}
-                className={cn(
-                  'group flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-colors w-full',
-                  collapsed && 'justify-center px-0',
-                  active
-                    ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
-                    : 'text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground'
-                )}
-              >
-                <item.icon className={cn('h-4 w-4 shrink-0', active && 'text-foreground')} />
-                {!collapsed && <span className="truncate">{item.label}</span>}
-                {!collapsed && item.badge && (
-                  <Badge className="ml-auto h-4 px-1 text-[10px]">{item.badge}</Badge>
-                )}
-              </button>
-            )
-          })}
+        {/* Nav */}
+        <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-4">
+          {groupedNav.map((g) => (
+            <div key={g.group}>
+              {!collapsed && (
+                <div className="px-2.5 mb-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-white/30">{g.group}</div>
+              )}
+              <div className="space-y-0.5">
+                {g.items.map((item) => {
+                  const active = activeView === item.id
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveView(item.id)}
+                      title={collapsed ? item.label : undefined}
+                      className={cn(
+                        'group flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-sm transition-all w-full',
+                        collapsed && 'justify-center px-0',
+                        active
+                          ? 'bg-gold/10 text-gold font-medium ring-1 ring-gold/20'
+                          : 'text-white/60 hover:bg-white/5 hover:text-white'
+                      )}
+                    >
+                      <item.icon className={cn('h-4 w-4 shrink-0', active && 'text-gold')} />
+                      {!collapsed && <span className="truncate">{item.label}</span>}
+                      {!collapsed && item.badge && (
+                        <Badge className="ml-auto h-4 px-1 text-[10px] bg-gold text-navy">{item.badge}</Badge>
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
-        <div className="border-t border-border p-2">
+        {/* Footer */}
+        <div className="border-t border-white/10 p-2 space-y-0.5">
           <button
             onClick={() => setCollapsed((v) => !v)}
-            className="flex items-center gap-2 w-full rounded-md px-2.5 py-1.5 text-xs text-muted-foreground hover:bg-sidebar-accent/50 hover:text-foreground"
+            className="flex items-center gap-2 w-full rounded-md px-2.5 py-1.5 text-xs text-white/40 hover:bg-white/5 hover:text-white/80"
           >
             {collapsed ? <ChevronRight className="h-3.5 w-3.5 mx-auto" /> : <ChevronLeft className="h-3.5 w-3.5" />}
             {!collapsed && 'Collapse'}
@@ -171,29 +201,45 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
       {/* Mobile sidebar */}
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
-          <aside className="relative w-[260px] bg-sidebar border-r border-border flex flex-col">
-            <div className="flex items-center justify-between h-14 px-4 border-b border-border">
-              <Brand />
-              <button onClick={() => setMobileOpen(false)}><X className="h-4 w-4" /></button>
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+          <aside className="relative w-[280px] sidebar-navy flex flex-col animate-in slide-in-from-left duration-200">
+            <div className="flex items-center justify-between h-16 px-4 border-b border-white/10">
+              <div className="flex items-center gap-2.5">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                  <rect width="32" height="32" rx="6" fill="#0a0d1f" stroke="rgba(201,169,97,0.3)" />
+                  <path d="M9 22L16 8L23 22M12 17H20" stroke="#c9a961" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <div className="leading-none">
+                  <div className="text-sm font-display font-bold tracking-tight text-white">THE AVAS</div>
+                  <div className="text-[9px] font-medium uppercase tracking-[0.18em] text-gold mt-0.5">VA Operations</div>
+                </div>
+              </div>
+              <button onClick={() => setMobileOpen(false)} className="text-white/60 hover:text-white"><X className="h-5 w-5" /></button>
             </div>
-            <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5">
-              {nav.map((item) => {
-                const active = activeView === item.id
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => { setActiveView(item.id); setMobileOpen(false) }}
-                    className={cn(
-                      'flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm w-full',
-                      active ? 'bg-sidebar-accent text-foreground font-medium' : 'text-muted-foreground hover:bg-sidebar-accent/50'
-                    )}
-                  >
-                    <item.icon className="h-4 w-4 shrink-0" />
-                    <span className="truncate">{item.label}</span>
-                  </button>
-                )
-              })}
+            <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-4">
+              {groupedNav.map((g) => (
+                <div key={g.group}>
+                  <div className="px-2.5 mb-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-white/30">{g.group}</div>
+                  <div className="space-y-0.5">
+                    {g.items.map((item) => {
+                      const active = activeView === item.id
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => { setActiveView(item.id); setMobileOpen(false) }}
+                          className={cn(
+                            'flex items-center gap-2.5 rounded-md px-2.5 py-2 text-sm w-full',
+                            active ? 'bg-gold/10 text-gold font-medium ring-1 ring-gold/20' : 'text-white/60 hover:bg-white/5 hover:text-white'
+                          )}
+                        >
+                          <item.icon className="h-4 w-4 shrink-0" />
+                          <span className="truncate">{item.label}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
             </nav>
           </aside>
         </div>
@@ -202,65 +248,74 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Topbar */}
-        <header className="h-14 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 flex items-center justify-between px-4 lg:px-6 shrink-0 z-30">
+        <header className="h-16 border-b border-border bg-card/80 backdrop-blur supports-[backdrop-filter]:bg-card/60 flex items-center justify-between px-4 lg:px-6 shrink-0 z-30">
           <div className="flex items-center gap-3 min-w-0">
-            <button className="md:hidden" onClick={() => setMobileOpen(true)}>
+            <button className="md:hidden text-navy" onClick={() => setMobileOpen(true)}>
               <Menu className="h-5 w-5" />
             </button>
-            <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground">
-              <span className="text-foreground font-medium">{roleLabel}</span>
-              <span className="text-border">/</span>
-              <span className="capitalize">{activeView.replace(/-/g, ' ')}</span>
+            <div className="hidden sm:flex items-center gap-3">
+              <div>
+                <div className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground font-medium">{roleLabel}</div>
+                <div className="text-sm font-display font-semibold text-navy leading-tight">{roleTagline}</div>
+              </div>
+              <div className="h-8 w-px bg-border mx-1" />
+              <div className="text-xs text-muted-foreground capitalize">
+                {activeView.replace(/-/g, ' ')}
+              </div>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Search trigger (admin) */}
+            {/* Search trigger */}
             <button
               onClick={() => setCmdOpen(true)}
-              className="hidden md:flex items-center gap-2 rounded-md border border-border bg-muted/30 hover:bg-muted px-2.5 py-1.5 text-xs text-muted-foreground transition-colors w-56"
+              className="hidden md:flex items-center gap-2 rounded-md border border-border bg-muted/30 hover:bg-muted px-2.5 py-1.5 text-xs text-muted-foreground transition-colors w-60 focus-gold"
             >
               <Search className="h-3.5 w-3.5" />
-              <span>Search…</span>
+              <span>Search or jump to…</span>
               <kbd className="ml-auto inline-flex items-center gap-0.5 rounded border border-border bg-background px-1 py-0.5 text-[10px]">
                 <Command className="h-2.5 w-2.5" />K
               </kbd>
             </button>
 
-            {/* Quick action (+) */}
+            {/* Quick action */}
             <QuickActionMenu open={quickActionOpen} setOpen={setQuickActionOpen} role={user?.role ?? ''} setActiveView={setActiveView} />
 
             {/* Notifications */}
             <NotificationBell open={notifOpen} setOpen={setNotifOpen} />
 
             {/* Profile */}
-            <div className="relative">
+            <div className="relative ml-1">
               <button
                 onClick={() => setProfileOpen((v) => !v)}
                 className="flex items-center gap-2 rounded-md hover:bg-muted px-1.5 py-1 transition-colors"
               >
                 <Avatar name={user?.name ?? 'User'} src={user?.avatarUrl} size="sm" />
                 <div className="hidden lg:block text-left leading-tight">
-                  <div className="text-xs font-medium text-foreground">{user?.name}</div>
-                  <div className="text-[10px] text-muted-foreground">{user?.role.toLowerCase()}</div>
+                  <div className="text-xs font-semibold text-navy">{user?.name}</div>
+                  <div className="text-[10px] text-muted-foreground capitalize">{user?.role.toLowerCase()}</div>
                 </div>
               </button>
               {profileOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setProfileOpen(false)} />
-                  <div className="absolute right-0 mt-1 w-56 rounded-lg border border-border bg-popover shadow-lg z-50 py-1 animate-in fade-in-0 slide-in-from-top-1 duration-150">
-                    <div className="px-3 py-2 border-b border-border">
-                      <div className="text-sm font-medium text-foreground truncate">{user?.name}</div>
+                  <div className="absolute right-0 mt-1 w-60 rounded-lg border border-border bg-popover shadow-xl z-50 py-1 animate-in fade-in-0 slide-in-from-top-1 duration-150">
+                    <div className="px-3 py-2.5 border-b border-border">
+                      <div className="text-sm font-semibold text-navy truncate">{user?.name}</div>
                       <div className="text-[11px] text-muted-foreground truncate">{user?.email}</div>
+                      <div className="mt-2 flex items-center gap-1.5">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                        <span className="text-[10px] text-muted-foreground">Active now</span>
+                      </div>
                     </div>
                     <button className="flex items-center gap-2 w-full px-3 py-1.5 text-xs text-foreground hover:bg-muted">
-                      <User className="h-3.5 w-3.5" /> Profile
+                      <User className="h-3.5 w-3.5 text-muted-foreground" /> Profile & preferences
                     </button>
                     <button className="flex items-center gap-2 w-full px-3 py-1.5 text-xs text-foreground hover:bg-muted">
-                      <Settings className="h-3.5 w-3.5" /> Preferences
+                      <Settings className="h-3.5 w-3.5 text-muted-foreground" /> Account settings
                     </button>
                     <button className="flex items-center gap-2 w-full px-3 py-1.5 text-xs text-foreground hover:bg-muted">
-                      <Bell className="h-3.5 w-3.5" /> Notification settings
+                      <Bell className="h-3.5 w-3.5 text-muted-foreground" /> Notification settings
                     </button>
                     <div className="border-t border-border my-1" />
                     <button
@@ -277,8 +332,8 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
         </header>
 
         {/* Page area */}
-        <main className="flex-1 overflow-y-auto">
-          <div className="max-w-[1400px] mx-auto px-4 lg:px-6 py-6">
+        <main className="flex-1 overflow-y-auto bg-background">
+          <div className="max-w-[1440px] mx-auto px-4 lg:px-8 py-6">
             {children}
           </div>
         </main>
@@ -298,7 +353,6 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
 // ============================================================
 
 function NotificationBell({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => void }) {
-  const { user } = useAuth()
   const [items, setItems] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -328,39 +382,43 @@ function NotificationBell({ open, setOpen }: { open: boolean; setOpen: (v: boole
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="relative p-2 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+        className="relative p-2 rounded-md hover:bg-muted text-muted-foreground hover:text-navy transition-colors"
       >
         <Bell className="h-4 w-4" />
         {unread > 0 && (
-          <span className="absolute top-1 right-1 h-1.5 w-1.5 rounded-full bg-rose-500" />
+          <span className="absolute top-1 right-1 h-4 min-w-4 px-1 rounded-full bg-gold text-navy text-[9px] font-bold flex items-center justify-center">{unread > 9 ? '9+' : unread}</span>
         )}
       </button>
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 mt-1 w-[340px] max-h-[460px] rounded-lg border border-border bg-popover shadow-lg z-50 flex flex-col animate-in fade-in-0 slide-in-from-top-1 duration-150">
+          <div className="absolute right-0 mt-1 w-[360px] max-h-[480px] rounded-lg border border-border bg-popover shadow-xl z-50 flex flex-col animate-in fade-in-0 slide-in-from-top-1 duration-150">
             <div className="flex items-center justify-between px-3 py-2.5 border-b border-border">
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-foreground">Notifications</span>
-                {unread > 0 && <Badge className="h-4 px-1 text-[10px] bg-rose-500 text-white">{unread} new</Badge>}
+                <span className="text-sm font-semibold text-navy">Notifications</span>
+                {unread > 0 && <Badge className="h-4 px-1 text-[10px] bg-gold text-navy">{unread} new</Badge>}
               </div>
-              <button onClick={markAll} className="text-[11px] text-muted-foreground hover:text-foreground">Mark all read</button>
+              <button onClick={markAll} className="text-[11px] text-gold hover:text-gold-dark font-medium">Mark all read</button>
             </div>
             <div className="flex-1 overflow-y-auto">
               {loading ? (
                 <div className="px-3 py-8 text-center text-xs text-muted-foreground">Loading…</div>
               ) : items.length === 0 ? (
-                <div className="px-3 py-8 text-center text-xs text-muted-foreground">No notifications yet.</div>
+                <div className="px-3 py-8 text-center text-xs text-muted-foreground">
+                  <Bell className="h-6 w-6 mx-auto mb-2 text-muted-foreground/30" />
+                  No notifications yet.
+                </div>
               ) : (
                 items.map((n) => (
-                  <div key={n.id} className={cn('px-3 py-2.5 border-b border-border/50 hover:bg-muted/40 cursor-pointer', !n.read && 'bg-blue-50/40')}>
+                  <div key={n.id} className={cn('px-3 py-2.5 border-b border-border/50 hover:bg-muted/40 cursor-pointer', !n.read && 'bg-gold/5')}>
                     <div className="flex items-start gap-2">
                       <NotifIcon type={n.type} />
                       <div className="min-w-0 flex-1">
-                        <div className="text-xs font-medium text-foreground truncate">{n.title}</div>
-                        <div className="text-[11px] text-muted-foreground line-clamp-2">{n.body}</div>
+                        <div className="text-xs font-medium text-navy truncate">{n.title}</div>
+                        <div className="text-[11px] text-muted-foreground line-clamp-2 mt-0.5">{n.body}</div>
                         <div className="text-[10px] text-muted-foreground/70 mt-1">{timeAgo(n.createdAt)}</div>
                       </div>
+                      {!n.read && <span className="h-1.5 w-1.5 rounded-full bg-gold mt-1.5 shrink-0" />}
                     </div>
                   </div>
                 ))
@@ -401,18 +459,17 @@ function QuickActionMenu({ open, setOpen, role, setActiveView }: { open: boolean
       { label: 'Add VA', view: 'vas', icon: UserCog },
       { label: 'Assign VA', view: 'assignments', icon: GitBranch },
       { label: 'Create Task', view: 'tasks', icon: ListTodo },
-      { label: 'Create Service', view: 'services', icon: Package },
-      { label: 'Create Report', view: 'reports', icon: FileText },
-      { label: 'Add QA Review', view: 'qa', icon: ShieldCheck },
+      { label: 'New QA Review', view: 'qa', icon: ShieldCheck },
+      { label: 'Generate Report', view: 'reports', icon: FileText },
     ],
     CLIENT: [
-      { label: 'Request Task', view: 'requests', icon: Send },
-      { label: 'Upload File', view: 'documents', icon: FolderOpen },
+      { label: 'New Task Request', view: 'requests', icon: Send },
+      { label: 'Upload Document', view: 'documents', icon: FolderOpen },
       { label: 'Message AVAS', view: 'messages', icon: MessageSquare },
     ],
     VA: [
       { label: 'Start Shift', view: 'tracker', icon: Clock3 },
-      { label: 'Create Work Submission', view: 'submission', icon: FileCheck },
+      { label: 'Submit Work', view: 'submission', icon: FileCheck },
     ],
   }
   const items = actions[role] ?? []
@@ -420,22 +477,23 @@ function QuickActionMenu({ open, setOpen, role, setActiveView }: { open: boolean
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="h-8 w-8 flex items-center justify-center rounded-md bg-foreground text-background hover:opacity-90 transition-opacity"
+        className="h-8 w-8 flex items-center justify-center rounded-md bg-navy text-white hover:bg-navy-light transition-colors shadow-sm"
+        title="Quick actions"
       >
         <Plus className="h-4 w-4" />
       </button>
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 mt-1 w-52 rounded-lg border border-border bg-popover shadow-lg z-50 py-1 animate-in fade-in-0 slide-in-from-top-1 duration-150">
-            <div className="px-3 py-1.5 text-[10px] text-muted-foreground uppercase tracking-wider">Quick actions</div>
+          <div className="absolute right-0 mt-1 w-56 rounded-lg border border-border bg-popover shadow-xl z-50 py-1 animate-in fade-in-0 slide-in-from-top-1 duration-150">
+            <div className="px-3 py-1.5 text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Quick actions</div>
             {items.map((a) => (
               <button
                 key={a.label}
                 onClick={() => { if (a.view) setActiveView(a.view); setOpen(false); a.onClick?.() }}
-                className="flex items-center gap-2.5 w-full px-3 py-1.5 text-xs text-foreground hover:bg-muted"
+                className="flex items-center gap-2.5 w-full px-3 py-1.5 text-xs text-navy hover:bg-muted font-medium"
               >
-                <a.icon className="h-3.5 w-3.5 text-muted-foreground" />
+                <a.icon className="h-3.5 w-3.5 text-gold" />
                 {a.label}
               </button>
             ))}
@@ -474,8 +532,8 @@ function CommandPalette({ open, setOpen, setActiveView, nav }: { open: boolean; 
   if (!open) return null
   return (
     <div className="fixed inset-0 z-[60] flex items-start justify-center pt-[15vh]">
-      <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} />
-      <div className="relative w-full max-w-xl rounded-xl border border-border bg-popover shadow-2xl z-10 animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-150">
+      <div className="absolute inset-0 bg-navy/40 backdrop-blur-sm" onClick={() => setOpen(false)} />
+      <div className="relative w-full max-w-xl rounded-xl border border-border bg-popover shadow-2xl z-10 animate-in fade-in-0 zoom-in-95 slide-in-from-top-2 duration-150 overflow-hidden">
         <div className="flex items-center border-b border-border px-3">
           <Search className="h-4 w-4 text-muted-foreground" />
           <input
@@ -490,25 +548,25 @@ function CommandPalette({ open, setOpen, setActiveView, nav }: { open: boolean; 
         <div className="max-h-[320px] overflow-y-auto p-1.5">
           {quickActions.length > 0 && (
             <>
-              <div className="px-2 py-1 text-[10px] text-muted-foreground uppercase tracking-wider">Quick actions</div>
+              <div className="px-2 py-1 text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Quick actions</div>
               {quickActions.map((a) => (
                 <button
                   key={a.label}
                   onClick={() => { setActiveView(a.view); setOpen(false) }}
-                  className="flex items-center gap-2.5 w-full px-2 py-1.5 text-sm rounded-md hover:bg-muted"
+                  className="flex items-center gap-2.5 w-full px-2 py-1.5 text-sm rounded-md hover:bg-muted text-navy"
                 >
-                  <Command className="h-3.5 w-3.5 text-muted-foreground" />
+                  <Command className="h-3.5 w-3.5 text-gold" />
                   {a.label}
                 </button>
               ))}
             </>
           )}
-          <div className="px-2 py-1 text-[10px] text-muted-foreground uppercase tracking-wider">Navigation</div>
+          <div className="px-2 py-1 text-[10px] text-muted-foreground uppercase tracking-wider font-semibold mt-2">Navigation</div>
           {filtered.map((n) => (
             <button
               key={n.id}
               onClick={() => { setActiveView(n.id); setOpen(false) }}
-              className="flex items-center gap-2.5 w-full px-2 py-1.5 text-sm rounded-md hover:bg-muted"
+              className="flex items-center gap-2.5 w-full px-2 py-1.5 text-sm rounded-md hover:bg-muted text-navy"
             >
               <n.icon className="h-3.5 w-3.5 text-muted-foreground" />
               {n.label}
@@ -530,17 +588,17 @@ function CommandPalette({ open, setOpen, setActiveView, nav }: { open: boolean; 
 function MobileBottomNav({ nav, activeView, setActiveView }: { nav: NavItem[]; activeView: string; setActiveView: (v: string) => void }) {
   const top5 = nav.slice(0, 5)
   return (
-    <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 flex items-center justify-around px-1 py-1">
+    <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 flex items-center justify-around px-1 py-1">
       {top5.map((item) => {
         const active = activeView === item.id
         return (
           <button
             key={item.id}
             onClick={() => setActiveView(item.id)}
-            className={cn('flex flex-col items-center gap-0.5 px-2 py-1 rounded-md', active ? 'text-foreground' : 'text-muted-foreground')}
+            className={cn('flex flex-col items-center gap-0.5 px-2 py-1 rounded-md', active ? 'text-navy' : 'text-muted-foreground')}
           >
-            <item.icon className="h-4 w-4" />
-            <span className="text-[9px]">{item.label.split(' ')[0]}</span>
+            <item.icon className={cn('h-4 w-4', active && 'text-gold')} />
+            <span className="text-[9px] font-medium">{item.label.split(' ')[0]}</span>
           </button>
         )
       })}

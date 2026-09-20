@@ -27,8 +27,7 @@ export function ClientRequests() {
   const load = async () => {
     setLoading(true)
     try {
-      // Use admin-list endpoint but filter client's own — backend will enforce tenant isolation
-      const res = await fetch('/api/data/admin-list?type=tickets', { cache: 'no-store' })
+      const res = await fetch('/api/tickets/list', { cache: 'no-store' })
       const data = await res.json()
       setTickets(data.items ?? [])
     } finally { setLoading(false) }
