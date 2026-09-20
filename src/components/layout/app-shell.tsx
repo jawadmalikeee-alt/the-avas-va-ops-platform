@@ -132,19 +132,13 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
         {/* Brand header */}
         <div className={cn('flex items-center h-16 px-4 border-b border-white/10', collapsed && 'justify-center px-0')}>
           {collapsed ? (
-            <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-              <rect width="32" height="32" rx="7" fill="#ffffff" />
-              <path d="M9 22L16 8L23 22M12 17H20" stroke="#5271ff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <img src="/avas-icon.svg" alt="The AVAS" width={32} height={32} className="rounded-[18%] shadow-apple" />
           ) : (
             <div className="flex items-center gap-2.5">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                <rect width="32" height="32" rx="7" fill="#ffffff" />
-                <path d="M9 22L16 8L23 22M12 17H20" stroke="#5271ff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <img src="/avas-icon.svg" alt="The AVAS" width={36} height={36} className="rounded-[18%] shadow-apple" />
               <div className="leading-none">
                 <div className="text-sm font-display font-bold tracking-tight text-white">THE AVAS</div>
-                <div className="text-[9px] font-medium uppercase tracking-[0.18em] text-white/60 mt-0.5">VA Operations</div>
+                <div className="text-[9px] font-semibold uppercase tracking-[0.18em] text-white/70 mt-1">VA Operations</div>
               </div>
             </div>
           )}
@@ -205,16 +199,13 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
           <aside className="relative w-[280px] sidebar-navy flex flex-col animate-in slide-in-from-left duration-200">
             <div className="flex items-center justify-between h-16 px-4 border-b border-white/10">
               <div className="flex items-center gap-2.5">
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                  <rect width="32" height="32" rx="7" fill="#ffffff" />
-                  <path d="M9 22L16 8L23 22M12 17H20" stroke="#5271ff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                <img src="/avas-icon.svg" alt="The AVAS" width={36} height={36} className="rounded-[18%] shadow-apple" />
                 <div className="leading-none">
                   <div className="text-sm font-display font-bold tracking-tight text-white">THE AVAS</div>
-                  <div className="text-[9px] font-medium uppercase tracking-[0.18em] text-white/60 mt-0.5">VA Operations</div>
+                  <div className="text-[9px] font-semibold uppercase tracking-[0.18em] text-white/70 mt-1">VA Operations</div>
                 </div>
               </div>
-              <button onClick={() => setMobileOpen(false)} className="text-white/60 hover:text-white"><X className="h-5 w-5" /></button>
+              <button onClick={() => setMobileOpen(false)} className="text-white/70 hover:text-white"><X className="h-5 w-5" /></button>
             </div>
             <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-4">
               {groupedNav.map((g) => (

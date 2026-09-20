@@ -2,13 +2,15 @@
  * The AVAS — Shared utilities
  */
 
-/** Format milliseconds as "8h 02m" or "0h 45m" */
+/** Format milliseconds as "8h 2m" — no leading zeros, cleaner */
 export function formatDuration(ms: number): string {
-  if (!ms || ms < 0) return '0h 00m'
+  if (!ms || ms < 0) return '0h'
   const totalMin = Math.floor(ms / 60000)
   const h = Math.floor(totalMin / 60)
   const m = totalMin % 60
-  return `${h}h ${String(m).padStart(2, '0')}m`
+  if (h === 0) return `${m}m`
+  if (m === 0) return `${h}h`
+  return `${h}h ${m}m`
 }
 
 /** Format milliseconds as HH:MM:SS for live timers */

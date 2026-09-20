@@ -3,7 +3,7 @@
 import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui/card'
 
-/** Compact metric card — Apple style with soft shadow + large radius */
+/** Apple-style metric card with refined typography */
 export function MetricCard({
   label,
   value,
@@ -23,24 +23,24 @@ export function MetricCard({
 }) {
   return (
     <Card className={cn('p-5 gap-0 rounded-2xl border border-border bg-card shadow-apple', className)}>
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.06em]">{label}</span>
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-[11px] font-bold text-foreground/60 uppercase tracking-[0.08em]">{label}</span>
         {Icon && (
-          <div className="h-8 w-8 rounded-xl bg-navy/5 flex items-center justify-center">
-            <Icon className="h-4 w-4 text-navy" />
+          <div className="h-8 w-8 rounded-xl bg-avas-blue/8 flex items-center justify-center">
+            <Icon className="h-[18px] w-[18px] text-avas-blue" />
           </div>
         )}
       </div>
-      <div className="text-3xl font-display tabular-nums tracking-tight text-navy">{value}</div>
+      <div className="text-[28px] font-display font-bold tabular-nums tracking-tight text-foreground leading-none">{value}</div>
       {(delta || hint) && (
-        <div className="mt-1.5 flex items-center gap-2 text-[11px]">
+        <div className="mt-2 flex items-center gap-2 text-[11px]">
           {delta && (
             <span
               className={cn(
-                'font-semibold px-1.5 py-0.5 rounded-full',
+                'font-semibold px-2 py-0.5 rounded-full',
                 deltaType === 'up' && 'text-emerald-700 bg-emerald-50',
                 deltaType === 'down' && 'text-rose-700 bg-rose-50',
-                deltaType === 'neutral' && 'text-muted-foreground bg-muted'
+                deltaType === 'neutral' && 'text-foreground/70 bg-muted'
               )}
             >
               {deltaType === 'up' && '↑ '}
@@ -48,14 +48,14 @@ export function MetricCard({
               {delta}
             </span>
           )}
-          {hint && <span className="text-muted-foreground">{hint}</span>}
+          {hint && <span className="text-foreground/60 font-medium">{hint}</span>}
         </div>
       )}
     </Card>
   )
 }
 
-/** Status badge — Apple pill style with rounded full corners */
+/** Apple-style status badge */
 export function StatusBadge({ status, size = 'sm', label, className }: { status: string; size?: 'xs' | 'sm' | 'md'; label?: string; className?: string }) {
   const colors: Record<string, string> = {
     Working: 'bg-emerald-500', Online: 'bg-emerald-500', Break: 'bg-amber-500',
@@ -76,7 +76,7 @@ export function StatusBadge({ status, size = 'sm', label, className }: { status:
   return (
     <span className={cn('inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-muted', className)}>
       <span className={cn('rounded-full inline-block shrink-0', dotSize, dot, status === 'Working' && 'live-pulse')} />
-      <span className={cn('font-medium text-foreground', labelSize)}>{label ?? status}</span>
+      <span className={cn('font-semibold text-foreground', labelSize)}>{label ?? status}</span>
     </span>
   )
 }
@@ -95,13 +95,13 @@ export function Pill({ children, tone = 'default', className }: { children: Reac
   return <span className={cn('inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ring-1 ring-inset', tones[tone], className)}>{children}</span>
 }
 
-/** Section header */
+/** Section header with Apple-style typography */
 export function SectionHeader({ title, subtitle, action }: { title: string; subtitle?: string; action?: React.ReactNode }) {
   return (
-    <div className="flex items-end justify-between mb-3">
+    <div className="flex items-end justify-between mb-4">
       <div>
-        <h2 className="text-base font-display text-navy tracking-tight">{title}</h2>
-        {subtitle && <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>}
+        <h2 className="text-lg font-display font-bold text-foreground tracking-tight">{title}</h2>
+        {subtitle && <p className="text-sm text-foreground/60 mt-1 font-medium">{subtitle}</p>}
       </div>
       {action}
     </div>
@@ -114,11 +114,11 @@ export function EmptyState({ title, description, action, icon: Icon }: { title: 
     <div className="flex flex-col items-center justify-center text-center py-14 px-4">
       {Icon && (
         <div className="h-14 w-14 rounded-2xl bg-muted flex items-center justify-center mb-3">
-          <Icon className="h-6 w-6 text-muted-foreground/60" />
+          <Icon className="h-6 w-6 text-foreground/50" />
         </div>
       )}
-      <h3 className="text-sm font-semibold text-navy">{title}</h3>
-      {description && <p className="text-xs text-muted-foreground mt-1 max-w-sm">{description}</p>}
+      <h3 className="text-base font-display font-bold text-foreground">{title}</h3>
+      {description && <p className="text-sm text-foreground/70 mt-1.5 max-w-sm font-medium">{description}</p>}
       {action && <div className="mt-4">{action}</div>}
     </div>
   )
@@ -137,7 +137,7 @@ export function LoadingSkeleton({ rows = 5, className }: { rows?: number; classN
 
 /** Inline progress bar */
 export function MiniProgress({ value, className, tone = 'default' }: { value: number; className?: string; tone?: 'default' | 'success' | 'warning' | 'danger' }) {
-  const toneColor = tone === 'success' ? 'bg-emerald-500' : tone === 'warning' ? 'bg-amber-500' : tone === 'danger' ? 'bg-rose-500' : 'bg-navy'
+  const toneColor = tone === 'success' ? 'bg-emerald-500' : tone === 'warning' ? 'bg-amber-500' : tone === 'danger' ? 'bg-rose-500' : 'bg-avas-blue'
   return (
     <div className={cn('h-2 w-full rounded-full bg-muted overflow-hidden', className)}>
       <div className={cn('h-full rounded-full transition-all duration-500', toneColor)} style={{ width: `${Math.max(0, Math.min(100, value))}%` }} />
@@ -152,7 +152,7 @@ export function Avatar({ name, src, size = 'md', className, rounded = 'full' }: 
   const radius = rounded === 'full' ? 'rounded-full' : 'rounded-xl'
   if (src) return <img src={src} alt={name} className={cn('object-cover ring-2 ring-background shadow-apple', dim, radius, className)} />
   return (
-    <div className={cn('bg-gradient-to-br from-navy to-navy-light text-white font-semibold flex items-center justify-center shrink-0 shadow-apple', dim, radius, className)}>
+    <div className={cn('bg-gradient-to-br from-avas-blue to-avas-blue-deep text-white font-bold flex items-center justify-center shrink-0 shadow-apple', dim, radius, className)}>
       {initials}
     </div>
   )

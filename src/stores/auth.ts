@@ -9,13 +9,21 @@ export interface SessionUser {
   email: string
   role: 'ADMIN' | 'CLIENT' | 'VA' | 'OPERATIONS_MANAGER' | 'TEAM_LEAD' | 'QA_MANAGER'
   timezone: string
+  phone: string | null
   avatarUrl: string | null
   jobTitle: string | null
   clientId: string | null
-  vaId: string | null
   client: {
     id: string
     companyName: string
+    contactPerson: string
+    email: string
+    phone: string | null
+    country: string
+    industry: string
+    package: string
+    contractedHours: number
+    billingCycle: string
     brandColor: string
     timezone: string
     canSeeHours: boolean
@@ -33,6 +41,7 @@ export interface SessionUser {
     shiftStartedAt: string | null
     performanceScore: number
     qualityScore: number
+    attendanceScore: number
   } | null
 }
 

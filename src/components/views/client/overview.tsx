@@ -108,21 +108,21 @@ export function ClientOverview() {
       {/* Today + This Week row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Today */}
-        <Card className="border-border/70 shadow-none p-4">
+        <Card className="border-border shadow-apple p-5">
           <SectionHeader title="Today" subtitle="What's happening right now" />
           {data.today.activeTask ? (
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div>
-                <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Current Task</div>
-                <div className="text-sm font-medium text-foreground mt-0.5">{data.today.activeTask.title}</div>
-                <div className="text-[11px] text-muted-foreground mt-0.5">
+                <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-foreground/60 mb-1.5">Current Task</div>
+                <div className="text-base font-display font-bold text-foreground leading-tight">{data.today.activeTask.title}</div>
+                <div className="text-xs text-foreground/70 mt-1 font-medium">
                   {data.today.activeTask.service} · Started {data.today.activeTask.startedAt ? formatTime(data.today.activeTask.startedAt) : '—'}
                 </div>
               </div>
               <div>
-                <div className="flex items-center justify-between text-[11px] mb-1">
-                  <span className="text-muted-foreground">Progress</span>
-                  <span className="font-medium text-foreground tabular-nums">{data.today.activeTask.progress}%</span>
+                <div className="flex items-center justify-between text-xs mb-1.5">
+                  <span className="font-semibold text-foreground/60">Progress</span>
+                  <span className="font-bold text-foreground tabular-nums">{data.today.activeTask.progress}%</span>
                 </div>
                 <MiniProgress value={data.today.activeTask.progress} />
               </div>
@@ -133,10 +133,14 @@ export function ClientOverview() {
         </Card>
 
         {/* This Week */}
-        <Card className="border-border/70 shadow-none p-4">
+        <Card className="border-border shadow-apple p-5">
           <SectionHeader title="This Week" subtitle="Performance summary" />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <MetricCard label="Hours" value={formatDuration(data.week.hoursMs)} hint={`/ ${data.week.scheduledHours}h`} />
+            <MetricCard
+              label="Hours"
+              value={<span className="tabular-nums">{formatDuration(data.week.hoursMs).replace('h ', 'h ').replace('m', 'm')}</span>}
+              hint={`of ${data.week.scheduledHours}h scheduled`}
+            />
             <MetricCard label="Tasks Done" value={data.week.tasksCompleted} icon={ListTodo} />
             <MetricCard label="Pending" value={data.week.tasksPending} icon={Clock} />
             {v.canSeeQA && data.qa && <MetricCard label="QA Score" value={`${data.qa.score}%`} icon={ShieldCheck} delta={`${data.qa.trend > 0 ? '+' : ''}${data.qa.trend}%`} deltaType={data.qa.trend >= 0 ? 'up' : 'down'} />}
