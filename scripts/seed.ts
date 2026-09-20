@@ -5,9 +5,16 @@
  * Run with: bun run db:seed
  */
 import { PrismaClient } from '@prisma/client'
+import { PrismaLibSQL } from '@prisma/adapter-libsql'
 import { createHash } from 'crypto'
 
-const db = new PrismaClient()
+// Turso credentials
+const TURSO_URL = 'libsql://va-operations-portal-jawadmalikeee-alt.aws-ap-northeast-1.turso.io'
+const TURSO_TOKEN = 'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJleHAiOjE3OTA1NDc3NzIsImlhdCI6MTc4OTk0Mjk3MiwiaWQiOiIwMWEwYzBlNC1iMzAxLTczYTYtOTFjZS0zNDAwZWE1NDBiNmQiLCJraWQiOiJlaGpPZXdxaXZobFhRS1lpS1p0LUhOc3lyYlotN3p2UlB0YzhCNG9RTTBrIiwicmlkIjoiMGY5YThkODAtOTA4Ny00OTRjLTg0MmItOGEzNjUyZWQ0MWFjIn0.GA6ysErfrV3KVJjUV5ur0bMwk5IXUS-S4bK_tGxq3GFUGsEpF0ND7Z-yqW99emIgtKGzSNwL6jts3J17piWoAw'
+
+// Pass config object {url, authToken} — PrismaLibSQL creates the client internally
+const adapter = new PrismaLibSQL({ url: TURSO_URL, authToken: TURSO_TOKEN })
+const db = new PrismaClient({ adapter } as any)
 
 // Simple deterministic hash — DO NOT use in production
 function hashPassword(pw: string): string {
