@@ -132,8 +132,8 @@ export default function Page() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
-          <div className="h-8 w-8 rounded-md bg-foreground animate-pulse mx-auto mb-3" />
-          <div className="text-xs text-muted-foreground">Loading The AVAS…</div>
+          <img src="/avas-icon.svg" alt="The AVAS" width={48} height={48} className="rounded-[18%] shadow-apple mx-auto mb-3 animate-pulse" />
+          <div className="text-xs text-foreground/70 font-semibold">Loading The AVAS…</div>
         </div>
       </div>
     )

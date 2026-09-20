@@ -292,28 +292,51 @@ export function AppShell({ activeView, setActiveView, children }: AppShellProps)
                   <div className="fixed inset-0 z-40" onClick={() => setProfileOpen(false)} />
                   <div className="absolute right-0 mt-1 w-64 rounded-2xl border border-border bg-popover shadow-apple-lg z-50 py-1.5 overflow-hidden animate-scale-in">
                     <div className="px-3 py-2.5 border-b border-border">
-                      <div className="text-sm font-semibold text-navy truncate">{user?.name}</div>
-                      <div className="text-[11px] text-muted-foreground truncate">{user?.email}</div>
+                      <div className="text-sm font-bold text-foreground truncate">{user?.name}</div>
+                      <div className="text-[11px] text-foreground/70 truncate font-medium">{user?.email}</div>
                       <div className="mt-2 flex items-center gap-1.5">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                        <span className="text-[10px] text-muted-foreground">Active now</span>
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 live-pulse" />
+                        <span className="text-[10px] text-foreground/70 font-semibold">Active now</span>
                       </div>
                     </div>
-                    <button className="flex items-center gap-2 w-full px-3 py-1.5 text-xs text-foreground hover:bg-muted">
-                      <User className="h-3.5 w-3.5 text-muted-foreground" /> Profile & preferences
+                    <button
+                      onClick={() => {
+                        const profileView = user?.role === 'CLIENT' ? 'account' : user?.role === 'VA' ? 'profile' : 'settings'
+                        setActiveView(profileView)
+                        setProfileOpen(false)
+                      }}
+                      className="flex items-center gap-2 w-full px-3 py-2 text-xs text-foreground hover:bg-muted font-semibold"
+                    >
+                      <User className="h-[18px] w-[18px] text-avas-blue" /> Profile & preferences
                     </button>
-                    <button className="flex items-center gap-2 w-full px-3 py-1.5 text-xs text-foreground hover:bg-muted">
-                      <Settings className="h-3.5 w-3.5 text-muted-foreground" /> Account settings
+                    <button
+                      onClick={() => {
+                        const settingsView = user?.role === 'CLIENT' ? 'account' : user?.role === 'VA' ? 'profile' : 'settings'
+                        setActiveView(settingsView)
+                        setProfileOpen(false)
+                      }}
+                      className="flex items-center gap-2 w-full px-3 py-2 text-xs text-foreground hover:bg-muted font-semibold"
+                    >
+                      <Settings className="h-[18px] w-[18px] text-avas-blue" /> Account settings
                     </button>
-                    <button className="flex items-center gap-2 w-full px-3 py-1.5 text-xs text-foreground hover:bg-muted">
-                      <Bell className="h-3.5 w-3.5 text-muted-foreground" /> Notification settings
+                    <button
+                      onClick={() => {
+                        // Navigate to the notifications view
+                        const notifView = user?.role === 'CLIENT' ? 'requests' : 'notifications'
+                        setActiveView(notifView)
+                        setProfileOpen(false)
+                        toast('Notification preferences are in your profile settings', 'info')
+                      }}
+                      className="flex items-center gap-2 w-full px-3 py-2 text-xs text-foreground hover:bg-muted font-semibold"
+                    >
+                      <Bell className="h-[18px] w-[18px] text-avas-blue" /> Notification settings
                     </button>
                     <div className="border-t border-border my-1" />
                     <button
                       onClick={() => { logout(); toast('Signed out successfully', 'success') }}
-                      className="flex items-center gap-2 w-full px-3 py-1.5 text-xs text-rose-600 hover:bg-rose-50"
+                      className="flex items-center gap-2 w-full px-3 py-2 text-xs text-rose-600 hover:bg-rose-50 font-semibold"
                     >
-                      <LogOut className="h-3.5 w-3.5" /> Sign out
+                      <LogOut className="h-[18px] w-[18px]" /> Sign out
                     </button>
                   </div>
                 </>
