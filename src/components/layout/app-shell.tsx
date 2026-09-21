@@ -33,6 +33,7 @@ const ADMIN_NAV: NavItem[] = [
   { id: 'tasks', label: 'Tasks & Projects', icon: ListTodo, group: 'Operations' },
   { id: 'services', label: 'Service Delivery', icon: Package, group: 'Operations' },
   { id: 'qa', label: 'QA & Quality', icon: ShieldCheck, group: 'Operations' },
+  { id: 'requests', label: 'Client Requests', icon: Send, group: 'Operations' },
   { id: 'reports', label: 'Reports', icon: FileText, group: 'Insights' },
   { id: 'analytics', label: 'Analytics', icon: BarChart3, group: 'Insights' },
   { id: 'communication', label: 'Communication', icon: MessageSquare, group: 'Workspace' },
