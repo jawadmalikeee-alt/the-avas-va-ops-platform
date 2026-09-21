@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { ShieldCheck, Clock, BarChart3, ArrowRight, Phone, Info } from 'lucide-react'
 
-export function LoginScreen() {
+export function LoginScreen({ onRegister }: { onRegister?: () => void }) {
   const { fetchUser } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -118,8 +118,15 @@ export function LoginScreen() {
             </div>
           </div>
 
-          <p className="mt-6 text-[11px] text-foreground/50 leading-relaxed">
-            Don't have an account? Contact your AVAS account manager — they will create your portal access.
+          <div className="mt-6 text-center text-sm text-foreground/70">
+            Don't have an account?{' '}
+            <button onClick={onRegister} className="text-avas-blue font-bold hover:underline">
+              Create admin account
+            </button>
+          </div>
+
+          <p className="mt-4 text-center text-[11px] text-foreground/50 leading-relaxed">
+            VA and Client accounts are created by the admin. Contact your AVAS account manager for access.
           </p>
         </div>
       </div>

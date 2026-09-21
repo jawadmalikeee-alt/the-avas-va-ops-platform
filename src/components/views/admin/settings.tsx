@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { SectionHeader, Pill, Avatar, EmptyState, LoadingSkeleton } from '@/components/ui-primitives'
 import { Header } from '@/components/views/admin/shared'
-import { Settings as SettingsIcon, Building2, Users, Shield, Bell, Palette, Plug, KeyRound, Lock, RotateCcw } from 'lucide-react'
+import { Settings as SettingsIcon, Building2, Users, Shield, Bell, Palette, Plug, KeyRound, Lock, RotateCcw, Plus } from 'lucide-react'
 import { toast } from '@/components/ui-primitives/toast'
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription
@@ -97,6 +97,9 @@ function UsersTab() {
   const [loading, setLoading] = useState(true)
   const [resetUser, setResetUser] = useState<any>(null)
   const [newPassword, setNewPassword] = useState('')
+  const [createOpen, setCreateOpen] = useState(false)
+  const [createForm, setCreateForm] = useState({ name: '', email: '', password: '', role: 'VA', companyName: '', specialization: 'Real Estate Virtual Assistant', phone: '', timezone: 'America/New_York' })
+  const [creating, setCreating] = useState(false)
   const [resetting, setResetting] = useState(false)
 
   const load = async () => {
@@ -108,6 +111,29 @@ function UsersTab() {
     } finally { setLoading(false) }
   }
   useEffect(() => { load() }, [])
+
+  const createUser = async () => {
+    if (!createForm.name || !createForm.email || !createForm.password) {
+      toast('Name, email, and password are required', 'error'); return
+    }
+    if (createForm.password.length < 6) { toast('Password must be at least 6 characters', 'error'); return }
+    if (createForm.role === 'CLIENT' && !createForm.companyName) { toast('Company name is required for clients', 'error'); return }
+    setCreating(true)
+    try {
+      const res = await fetch('/api/admin/create-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(createForm),
+      })
+      const d = await res.json()
+      if (!res.ok) { toast(d.error ?? 'Failed to create user', 'error'); return }
+      toast(`${createForm.role} account created for ${createForm.name}`, 'success')
+      setCreateOpen(false)
+      setCreateForm({ name: '', email: '', password: '', role: 'VA', companyName: '', specialization: 'Real Estate Virtual Assistant', phone: '', timezone: 'America/New_York' })
+      load()
+    } catch { toast('Failed', 'error') }
+    finally { setCreating(false) }
+  }
 
   const resetPassword = async () => {
     if (!resetUser || !newPassword) { toast('Enter a new password', 'error'); return }
@@ -144,9 +170,14 @@ function UsersTab() {
         <div className="px-5 py-4 border-b border-border flex items-center justify-between">
           <div>
             <h2 className="text-lg font-display font-bold text-foreground">Users & Roles</h2>
-            <p className="text-sm text-foreground/60 mt-0.5 font-medium">Manage all portal accounts and reset passwords</p>
+            <p className="text-sm text-foreground/60 mt-0.5 font-medium">Manage all portal accounts and create new VA/Client accounts</p>
           </div>
-          <Pill tone="info">{users.length} users</Pill>
+          <div className="flex items-center gap-2">
+            <Pill tone="info">{users.length} users</Pill>
+            <Button size="sm" className="bg-avas-blue hover:bg-avas-blue-light" onClick={() => setCreateOpen(true)}>
+              <Plus className="h-4 w-4 mr-1.5" />Create Account
+            </Button>
+          </div>
         </div>
         {loading ? <div className="p-4"><LoadingSkeleton rows={5} /></div> :
           users.length === 0 ? <EmptyState icon={Users} title="No users found" /> :
@@ -214,6 +245,70 @@ function UsersTab() {
             <Button onClick={resetPassword} disabled={resetting} className="bg-avas-blue hover:bg-avas-blue-light">
               <Lock className="h-4 w-4 mr-1.5" />
               {resetting ? 'Resetting…' : 'Reset Password'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Create Account Dialog */}
+      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+        <DialogContent className="sm:max-w-[520px] rounded-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"><Plus className="h-5 w-5 text-avas-blue" />Create New Account</DialogTitle>
+            <DialogDescription>Create a VA or Client account. They can sign in with these credentials immediately.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-[11px] text-foreground/60 font-bold">Full Name *</Label>
+                <Input value={createForm.name} onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })} placeholder="John Doe" className="mt-1.5 h-10 text-sm" />
+              </div>
+              <div>
+                <Label className="text-[11px] text-foreground/60 font-bold">Email *</Label>
+                <Input value={createForm.email} onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })} placeholder="user@email.com" type="email" className="mt-1.5 h-10 text-sm" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-[11px] text-foreground/60 font-bold">Password *</Label>
+                <Input value={createForm.password} onChange={(e) => setCreateForm({ ...createForm, password: e.target.value })} placeholder="Min 6 characters" className="mt-1.5 h-10 text-sm" />
+              </div>
+              <div>
+                <Label className="text-[11px] text-foreground/60 font-bold">Role *</Label>
+                <div className="flex gap-2 mt-1.5">
+                  <button onClick={() => setCreateForm({ ...createForm, role: 'VA' })} className={cn('flex-1 h-10 rounded-xl text-sm font-bold transition-colors', createForm.role === 'VA' ? 'bg-avas-blue text-white' : 'bg-muted text-foreground/70')}>VA</button>
+                  <button onClick={() => setCreateForm({ ...createForm, role: 'CLIENT' })} className={cn('flex-1 h-10 rounded-xl text-sm font-bold transition-colors', createForm.role === 'CLIENT' ? 'bg-avas-blue text-white' : 'bg-muted text-foreground/70')}>Client</button>
+                </div>
+              </div>
+            </div>
+            {createForm.role === 'CLIENT' && (
+              <div>
+                <Label className="text-[11px] text-foreground/60 font-bold">Company Name *</Label>
+                <Input value={createForm.companyName} onChange={(e) => setCreateForm({ ...createForm, companyName: e.target.value })} placeholder="ABC Realty" className="mt-1.5 h-10 text-sm" />
+              </div>
+            )}
+            {createForm.role === 'VA' && (
+              <div>
+                <Label className="text-[11px] text-foreground/60 font-bold">Specialization</Label>
+                <Input value={createForm.specialization} onChange={(e) => setCreateForm({ ...createForm, specialization: e.target.value })} placeholder="Real Estate Virtual Assistant" className="mt-1.5 h-10 text-sm" />
+              </div>
+            )}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label className="text-[11px] text-foreground/60 font-bold">Phone</Label>
+                <Input value={createForm.phone} onChange={(e) => setCreateForm({ ...createForm, phone: e.target.value })} placeholder="+1 555 0000" className="mt-1.5 h-10 text-sm" />
+              </div>
+              <div>
+                <Label className="text-[11px] text-foreground/60 font-bold">Timezone</Label>
+                <Input value={createForm.timezone} onChange={(e) => setCreateForm({ ...createForm, timezone: e.target.value })} placeholder="America/New_York" className="mt-1.5 h-10 text-sm" />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setCreateOpen(false)}>Cancel</Button>
+            <Button onClick={createUser} disabled={creating} className="bg-avas-blue hover:bg-avas-blue-light">
+              <Plus className="h-4 w-4 mr-1.5" />
+              {creating ? 'Creating…' : `Create ${createForm.role} Account`}
             </Button>
           </DialogFooter>
         </DialogContent>
