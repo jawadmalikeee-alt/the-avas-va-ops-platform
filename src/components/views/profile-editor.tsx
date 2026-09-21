@@ -28,6 +28,7 @@ export function ProfileEditor() {
     if (user) {
       setForm({
         name: user.name,
+        email: user.email,
         phone: user.phone ?? '',
         jobTitle: user.jobTitle ?? '',
         timezone: user.timezone,
@@ -83,6 +84,18 @@ export function ProfileEditor() {
         jobTitle: form.jobTitle,
         timezone: form.timezone,
       }
+
+      // If email changed, update via separate endpoint
+      if (form.email && form.email !== user?.email) {
+        const emailRes = await fetch('/api/auth/update-email', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ newEmail: form.email, confirmEmail: form.email }),
+        })
+        const emailData = await emailRes.json()
+        if (!emailRes.ok) { toast(emailData.error ?? 'Failed to update email', 'error'); setSaving(false); return }
+      }
+
       if (user?.role === 'CLIENT') {
         payload.client = {
           contactPerson: form.contactPerson,
@@ -98,7 +111,6 @@ export function ProfileEditor() {
       if (!res.ok) { toast(d.error ?? 'Failed to save', 'error'); return }
       toast('Profile saved successfully', 'success')
       setDirty(false)
-      // Refresh the session so the new data appears everywhere
       await fetchUser()
     } catch {
       toast('Failed to save', 'error')
@@ -226,8 +238,8 @@ export function ProfileEditor() {
           <Field
             label="Email"
             icon={Mail}
-            value={user.email}
-            readOnly
+            value={form.email ?? user.email}
+            onChange={(v) => update('email', v)}
             placeholder="Email address"
           />
           <Field

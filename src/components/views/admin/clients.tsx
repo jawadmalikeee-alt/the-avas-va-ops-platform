@@ -29,7 +29,7 @@ export function AdminClients() {
   const [items, setItems] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [q, setQ] = useState('')
-  const [status, setStatus] = useState('')
+  const [status, setStatus] = useState('Active')
   const [open, setOpen] = useState(false)
   const [editItem, setEditItem] = useState<any>(null)
   const [detailItem, setDetailItem] = useState<any>(null)

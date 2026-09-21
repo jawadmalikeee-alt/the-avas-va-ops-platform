@@ -16,6 +16,31 @@ export function LoginScreen({ onRegister }: { onRegister?: () => void }) {
   const [remember, setRemember] = useState(true)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [showForgot, setShowForgot] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState('')
+  const [forgotLoading, setForgotLoading] = useState(false)
+  const [forgotResult, setForgotResult] = useState('')
+
+  const handleForgot = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setForgotLoading(true)
+    setForgotResult('')
+    try {
+      const res = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: forgotEmail }),
+      })
+      const data = await res.json()
+      if (data.tempPassword) {
+        setForgotResult(`Your temporary password is: ${data.tempPassword}\nPlease sign in and change it from Profile Settings.`)
+      } else {
+        setForgotResult(data.message || 'If an account exists with this email, a reset link has been sent.')
+      }
+    } catch {
+      setForgotResult('Something went wrong. Please try again.')
+    } finally { setForgotLoading(false) }
+  }
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -67,7 +92,7 @@ export function LoginScreen({ onRegister }: { onRegister?: () => void }) {
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password" className="text-xs font-semibold text-foreground/60">Password</Label>
-                <button type="button" className="text-[11px] text-avas-blue hover:underline font-medium">Forgot?</button>
+                <button type="button" onClick={() => { setShowForgot(true); setForgotResult('') }} className="text-[11px] text-avas-blue hover:underline font-medium">Forgot password?</button>
               </div>
               <Input
                 id="password"
@@ -96,38 +121,40 @@ export function LoginScreen({ onRegister }: { onRegister?: () => void }) {
             </Button>
           </form>
 
-          {/* Default admin access info */}
-          <div className="mt-8 rounded-xl bg-avas-blue/5 border border-avas-blue/20 p-4">
-            <div className="flex items-start gap-2.5">
-              <Info className="h-4 w-4 text-avas-blue shrink-0 mt-0.5" />
-              <div>
-                <div className="text-xs font-bold text-foreground">Default Admin Access</div>
-                <p className="text-[11px] text-foreground/70 mt-1 leading-relaxed">
-                  If you've lost your credentials, use the default admin account to regain access:
-                </p>
-                <div className="mt-2 rounded-lg bg-card px-3 py-2 text-[11px] font-mono">
-                  <div className="text-foreground/60">Email:</div>
-                  <div className="text-avas-blue font-bold">admin@theavas.com</div>
-                  <div className="text-foreground/60 mt-1.5">Password:</div>
-                  <div className="text-avas-blue font-bold">avasadmin2026</div>
+          {/* Forgot password form */}
+          {showForgot && (
+            <div className="mt-4 rounded-xl bg-muted/40 border border-border p-4">
+              <div className="text-xs font-bold text-foreground mb-2">Reset Password</div>
+              <form onSubmit={handleForgot} className="space-y-2">
+                <Input
+                  type="email"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  placeholder="Enter your email"
+                  required
+                  className="h-10 text-sm"
+                />
+                <div className="flex gap-2">
+                  <Button type="submit" size="sm" disabled={forgotLoading} className="h-8 rounded-full text-xs bg-avas-blue hover:bg-avas-blue-light">
+                    {forgotLoading ? 'Sending…' : 'Send Reset'}
+                  </Button>
+                  <Button type="button" variant="ghost" size="sm" className="h-8 rounded-full text-xs" onClick={() => setShowForgot(false)}>Cancel</Button>
                 </div>
-                <p className="text-[10px] text-foreground/50 mt-2">
-                  Use this to sign in, then reset your password from Profile Settings.
-                </p>
-              </div>
+                {forgotResult && (
+                  <div className="rounded-lg bg-avas-blue/5 border border-avas-blue/20 px-3 py-2 text-[11px] text-foreground whitespace-pre-line font-medium">
+                    {forgotResult}
+                  </div>
+                )}
+              </form>
             </div>
-          </div>
+          )}
 
           <div className="mt-6 text-center text-sm text-foreground/70">
             Don't have an account?{' '}
             <button onClick={onRegister} className="text-avas-blue font-bold hover:underline">
-              Create admin account
+              Sign up
             </button>
           </div>
-
-          <p className="mt-4 text-center text-[11px] text-foreground/50 leading-relaxed">
-            VA and Client accounts are created by the admin. Contact your AVAS account manager for access.
-          </p>
         </div>
       </div>
 
