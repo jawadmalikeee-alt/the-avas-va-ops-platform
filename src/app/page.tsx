@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth } from '@/stores/auth'
 import { AppShell } from '@/components/layout/app-shell'
 import { LoginScreen } from '@/components/views/login'
@@ -54,7 +54,6 @@ import { VAProfile } from '@/components/views/va/profile'
 import { ChatInterface } from '@/components/views/chat-interface'
 import { ProfileEditor } from '@/components/views/profile-editor'
 import { IncomingCallListener } from '@/components/call-listener'
-import { useState } from 'react'
 
 function AdminView({ view }: { view: string }) {
   switch (view) {
@@ -117,13 +116,22 @@ export default function Page() {
   const hydrated = useHydrated()
   const { user, loading, fetchUser } = useAuth()
   const { view, setView } = useViewStore()
-
   const [showRegister, setShowRegister] = useState(false)
+  const [forceTimeout, setForceTimeout] = useState(false)
 
   // Fetch user on mount
   useEffect(() => {
     if (hydrated) fetchUser()
   }, [hydrated, fetchUser])
+
+  // Safety timeout: if loading doesn't resolve in 6 seconds, force show login
+  useEffect(() => {
+    if (!hydrated || !loading) return
+    const timer = setTimeout(() => {
+      setForceTimeout(true)
+    }, 6000)
+    return () => clearTimeout(timer)
+  }, [hydrated, loading])
 
   // Reset view when user changes (logout/login)
   useEffect(() => {
@@ -131,7 +139,8 @@ export default function Page() {
   }, [user, setView])
 
   // Show loading skeleton during initial hydration
-  if (!hydrated || (loading && !user)) {
+  // BUT: force timeout after 6 seconds so app never hangs forever
+  if (!hydrated || (loading && !user && !forceTimeout)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center">
@@ -166,9 +175,7 @@ export default function Page() {
       </AppShell>
       <IncomingCallListener
         onCallAccepted={(call) => {
-          // Force navigation to messages so the chat opens with the call modal
           setView('messages')
-          // Reload to trigger the call modal with the meeting URL
           setTimeout(() => {
             window.dispatchEvent(new CustomEvent('avas:incoming-call-accepted', { detail: call }))
           }, 100)

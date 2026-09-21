@@ -63,7 +63,16 @@ export const useAuth = create<AuthState>()(
       setLoading: (l) => set({ loading: l }),
       fetchUser: async () => {
         try {
-          const res = await fetch('/api/auth/me', { cache: 'no-store' })
+          // Add 5-second timeout — never hang forever on "Loading The AVAS…"
+          const controller = new AbortController()
+          const timeoutId = setTimeout(() => controller.abort(), 5000)
+
+          const res = await fetch('/api/auth/me', {
+            cache: 'no-store',
+            signal: controller.signal,
+          })
+          clearTimeout(timeoutId)
+
           if (!res.ok) {
             set({ user: null, loading: false })
             return
@@ -71,11 +80,14 @@ export const useAuth = create<AuthState>()(
           const data = await res.json()
           set({ user: data.user, loading: false })
         } catch {
+          // Timeout or network error — don't hang, show login page
           set({ user: null, loading: false })
         }
       },
       logout: async () => {
-        await fetch('/api/auth/logout', { method: 'POST' })
+        try {
+          await fetch('/api/auth/logout', { method: 'POST' })
+        } catch {}
         set({ user: null, loading: false })
       },
     }),
