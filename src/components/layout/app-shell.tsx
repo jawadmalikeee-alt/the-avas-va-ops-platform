@@ -47,6 +47,7 @@ const CLIENT_NAV: NavItem[] = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard, group: 'Main' },
   { id: 'my-vas', label: 'My VAs', icon: UserCog, group: 'Main' },
   { id: 'time', label: 'Time & Attendance', icon: Clock3, group: 'Main' },
+  { id: 'hours', label: 'Hour Tracking', icon: Clock3, group: 'Main' },
   { id: 'tasks', label: 'Tasks', icon: ListTodo, group: 'Work' },
   { id: 'services', label: 'Service Delivery', icon: Package, group: 'Work' },
   { id: 'reports', label: 'Reports', icon: FileText, group: 'Work' },

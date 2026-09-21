@@ -19,6 +19,7 @@ import { AdminTimeAttendance } from '@/components/views/admin/time'
 import { AdminTasks } from '@/components/views/admin/tasks'
 import { AdminServices } from '@/components/views/admin/services'
 import { AdminQA } from '@/components/views/admin/qa'
+import { AdminRequests } from '@/components/views/admin/requests'
 import { AdminReports } from '@/components/views/admin/reports'
 import { AdminCommunication } from '@/components/views/admin/communication'
 import { AdminDocuments } from '@/components/views/admin/documents'
@@ -31,6 +32,7 @@ import { AdminNotifications } from '@/components/views/admin/notifications'
 import { ClientOverview } from '@/components/views/client/overview'
 import { ClientMyVAs } from '@/components/views/client/my-vas'
 import { ClientTime } from '@/components/views/client/time'
+import { ClientHours } from '@/components/views/client/hours'
 import { ClientTasks } from '@/components/views/client/tasks'
 import { ClientServices } from '@/components/views/client/services'
 import { ClientReports } from '@/components/views/client/reports'
@@ -66,6 +68,7 @@ function AdminView({ view }: { view: string }) {
     case 'tasks': return <AdminTasks />
     case 'services': return <AdminServices />
     case 'qa': return <AdminQA />
+    case 'requests': return <AdminRequests />
     case 'reports': return <AdminReports />
     case 'communication': return <ChatInterface />
     case 'documents': return <AdminDocuments />
@@ -83,6 +86,7 @@ function ClientView({ view }: { view: string }) {
     case 'overview': return <ClientOverview />
     case 'my-vas': return <ClientMyVAs />
     case 'time': return <ClientTime />
+    case 'hours': return <ClientHours />
     case 'tasks': return <ClientTasks />
     case 'services': return <ClientServices />
     case 'reports': return <ClientReports />

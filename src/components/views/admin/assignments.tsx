@@ -195,9 +195,21 @@ export function AdminAssignments() {
               <Select value={form.role} onValueChange={(v) => setForm({ ...form, role: v })}>
                 <SelectTrigger className="mt-1 h-9 text-sm"><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {['Lead Management VA', 'Lead Follow-Up VA', 'CRM Management VA', 'Cold Calling VA', 'Social Media VA', 'Transaction Coordinator', 'Email & Calendar VA', 'CMA & Research VA', 'Appointment Setter', 'ISA (Inside Sales Agent)'].map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                  {['Lead Management VA', 'Lead Follow-Up VA', 'CRM Management VA', 'Cold Calling VA', 'Social Media VA', 'Transaction Coordinator', 'Email & Calendar VA', 'CMA & Research VA', 'Appointment Setter', 'ISA (Inside Sales Agent)', 'Account Manager', 'Account Lead', 'Other'].map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}
                 </SelectContent>
               </Select>
+              {form.role === 'Other' && (
+                <div className="mt-2">
+                  <Label className="text-[11px] text-muted-foreground">Custom Role Name</Label>
+                  <Input value={form.customRole ?? ''} onChange={(e) => setForm({ ...form, customRole: e.target.value, role: e.target.value })} placeholder="Enter custom role name" className="mt-1 h-9 text-sm" />
+                </div>
+              )}
+              {form.role === 'Other' && (
+                <div className="mt-2">
+                  <Label className="text-[11px] text-muted-foreground">Role Description</Label>
+                  <Input value={form.roleDescription ?? ''} onChange={(e) => setForm({ ...form, roleDescription: e.target.value })} placeholder="Describe this role's responsibilities" className="mt-1 h-9 text-sm" />
+                </div>
+              )}
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
