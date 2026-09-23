@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { ShieldCheck, Clock, BarChart3, ArrowRight, Phone, Info } from 'lucide-react'
 
-export function LoginScreen({ onRegister }: { onRegister?: () => void }) {
+export function LoginScreen() {
   const { fetchUser } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -149,12 +149,9 @@ export function LoginScreen({ onRegister }: { onRegister?: () => void }) {
             </div>
           )}
 
-          <div className="mt-6 text-center text-sm text-foreground/70">
-            Don't have an account?{' '}
-            <button onClick={onRegister} className="text-avas-blue font-bold hover:underline">
-              Sign up
-            </button>
-          </div>
+          <p className="mt-6 text-center text-sm text-foreground/50 font-medium">
+            Need access? Contact your AVAS account manager.
+          </p>
         </div>
       </div>
 

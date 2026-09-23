@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@/stores/auth'
 import { AppShell } from '@/components/layout/app-shell'
 import { LoginScreen } from '@/components/views/login'
-import { RegisterScreen } from '@/components/views/register'
 import { ToastContainer, useHydrated } from '@/components/ui-primitives/toast'
 import { useViewStore } from '@/stores/view'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -120,7 +119,6 @@ export default function Page() {
   const hydrated = useHydrated()
   const { user, loading, fetchUser } = useAuth()
   const { view, setView } = useViewStore()
-  const [showRegister, setShowRegister] = useState(false)
   const [forceTimeout, setForceTimeout] = useState(false)
 
   // Fetch user on mount
@@ -156,17 +154,9 @@ export default function Page() {
   }
 
   if (!user) {
-    if (showRegister) {
-      return (
-        <>
-          <RegisterScreen />
-          <ToastContainer />
-        </>
-      )
-    }
     return (
       <>
-        <LoginScreen onRegister={() => setShowRegister(true)} />
+        <LoginScreen />
         <ToastContainer />
       </>
     )
