@@ -14,6 +14,12 @@ export async function GET() {
       phone: user.phone,
       avatarUrl: user.avatarUrl,
       jobTitle: user.jobTitle,
+      designation: user.designation,
+      customDesignation: user.customDesignation,
+      description: user.description,
+      status: user.status,
+      mustChangePassword: user.mustChangePassword,
+      lastLogin: user.lastLogin,
       clientId: user.client?.id ?? null,
       client: user.client ? {
         id: user.client.id,

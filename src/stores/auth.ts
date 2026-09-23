@@ -12,6 +12,12 @@ export interface SessionUser {
   phone: string | null
   avatarUrl: string | null
   jobTitle: string | null
+  designation: string | null
+  customDesignation: string | null
+  description: string | null
+  status: string
+  mustChangePassword: boolean
+  lastLogin: string | null
   clientId: string | null
   client: {
     id: string

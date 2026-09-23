@@ -1,23 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { getCurrentUser } from '@/lib/auth'
-import { createHash } from 'crypto'
-
-function hashPassword(pw: string): string {
-  return createHash('sha256').update(pw).digest('hex')
-}
+import { getCurrentUser, hashPassword } from '@/lib/auth'
 
 /**
  * POST /api/admin/create-user
- *   Admin creates a VA or Client account
- *   body: { name, email, password, role: 'VA'|'CLIENT', ...extraFields }
+ * Admin creates a Client or Employee/Agent account.
  *
- * For CLIENT: also creates a Client record with company info
- * For VA: also creates a VA record with specialization
+ * body: {
+ *   name, email, password,
+ *   role: 'CLIENT' | 'VA',
+ *   designation?, customDesignation?, description?, phone?, timezone?,
+ *   companyName?, specialization?, ...
+ * }
  */
 export async function POST(req: NextRequest) {
-  const user = await getCurrentUser()
-  if (!user || user.role !== 'ADMIN') {
+  const adminUser = await getCurrentUser()
+  if (!adminUser || adminUser.role !== 'ADMIN') {
     return NextResponse.json({ error: 'Only admins can create accounts.' }, { status: 403 })
   }
 
@@ -30,18 +28,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Password must be at least 6 characters.' }, { status: 400 })
   }
   if (!['VA', 'CLIENT'].includes(role)) {
-    return NextResponse.json({ error: 'Role must be VA or CLIENT.' }, { status: 400 })
+    return NextResponse.json({ error: 'Role must be VA (Employee) or CLIENT.' }, { status: 400 })
   }
 
   const normalizedEmail = email.toLowerCase().trim()
-
-  // Check if email exists
   const existing = await db.user.findUnique({ where: { email: normalizedEmail } })
   if (existing) {
-    return NextResponse.json({ error: 'An account with this email already exists.' }, { status: 400 })
+    return NextResponse.json({ error: 'This email is already registered.' }, { status: 400 })
   }
 
-  // Create user
   const newUser = await db.user.create({
     data: {
       email: normalizedEmail,
@@ -50,11 +45,15 @@ export async function POST(req: NextRequest) {
       role,
       timezone: extra.timezone || 'America/New_York',
       phone: extra.phone || null,
-      jobTitle: extra.jobTitle || (role === 'VA' ? extra.specialization : 'Account Owner'),
+      jobTitle: extra.designation || (role === 'VA' ? extra.specialization : 'Account Owner'),
+      designation: extra.designation || null,
+      customDesignation: extra.customDesignation || null,
+      description: extra.description || null,
+      status: 'ACTIVE',
+      mustChangePassword: false,
     },
   })
 
-  // Create role-specific record
   if (role === 'CLIENT') {
     await db.client.create({
       data: {
@@ -79,7 +78,7 @@ export async function POST(req: NextRequest) {
     await db.vA.create({
       data: {
         userId: newUser.id,
-        specialization: extra.specialization || 'Real Estate Virtual Assistant',
+        specialization: extra.specialization || extra.designation || 'Real Estate Virtual Assistant',
         skills: extra.skills || '',
         hireDate: new Date(),
         employmentType: extra.employmentType || 'Full-Time',
@@ -93,14 +92,13 @@ export async function POST(req: NextRequest) {
     })
   }
 
-  // Audit log
   await db.auditLog.create({
     data: {
-      actorId: user.id,
+      actorId: adminUser.id,
       action: 'USER_CREATED',
       entityType: 'User',
       entityId: newUser.id,
-      after: `Created ${role} account: ${name} (${normalizedEmail})`,
+      after: `Created ${role} account: ${name} (${normalizedEmail}) — Designation: ${extra.designation || 'N/A'}`,
     },
   })
 

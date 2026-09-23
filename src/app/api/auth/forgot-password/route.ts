@@ -9,8 +9,8 @@ function hashPassword(pw: string): string {
 /**
  * POST /api/auth/forgot-password
  *   body: { email }
- *   If email exists: resets password to a temporary one and returns it
- *   (In production: send email with reset link. For now: return temp password.)
+ *   Generates a temporary password and returns it (for dev without email service).
+ *   In production: send email with reset link/token.
  */
 export async function POST(req: NextRequest) {
   const { email } = await req.json()
@@ -19,7 +19,10 @@ export async function POST(req: NextRequest) {
   const normalizedEmail = email.toLowerCase().trim()
   const user = await db.user.findUnique({ where: { email: normalizedEmail } })
   if (!user) {
-    // Don't reveal whether email exists — return success
+    return NextResponse.json({ ok: true, message: 'If an account exists with this email, a reset link has been sent.' })
+  }
+
+  if (user.status === 'INACTIVE' || user.status === 'REMOVED') {
     return NextResponse.json({ ok: true, message: 'If an account exists with this email, a reset link has been sent.' })
   }
 
@@ -28,24 +31,17 @@ export async function POST(req: NextRequest) {
   let tempPassword = ''
   for (let i = 0; i < 10; i++) tempPassword += chars[Math.floor(Math.random() * chars.length)]
 
-  // Update password
   await db.user.update({
     where: { id: user.id },
-    data: { passwordHash: hashPassword(tempPassword) },
+    data: { passwordHash: hashPassword(tempPassword), mustChangePassword: true },
   })
 
-  // Audit log
   await db.auditLog.create({
-    data: {
-      actorId: user.id,
-      action: 'PASSWORD_RESET_REQUESTED',
-      entityType: 'User',
-      entityId: user.id,
-    },
+    data: { actorId: user.id, action: 'PASSWORD_RESET_REQUESTED', entityType: 'User', entityId: user.id },
   })
 
-  // In production: send email with the temp password or reset link
-  // For now: return the temp password (only works if email exists)
+  // In production: send email with reset link/token instead of returning temp password
+  // For now: return the temp password (dev mode without email service configured)
   return NextResponse.json({
     ok: true,
     tempPassword,

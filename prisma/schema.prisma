@@ -16,37 +16,46 @@ datasource db {
 // ============================================
 
 model User {
-  id            String   @id @default(cuid())
-  email         String   @unique
-  passwordHash  String
-  name          String
-  avatarUrl     String?
-  role          UserRole
-  timezone      String   @default("Asia/Karachi")
-  phone         String?
-  jobTitle      String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  lastActiveAt  DateTime?
+  id               String   @id @default(cuid())
+  email            String   @unique
+  passwordHash     String
+  name             String
+  avatarUrl        String?
+  role             UserRole
+  timezone         String   @default("America/New_York")
+  phone            String?
+  jobTitle         String?
+  designation      String?
+  customDesignation String?
+  description      String?
+  status           String   @default("ACTIVE")
+  emailVerified    Boolean  @default(false)
+  phoneVerified    Boolean  @default(false)
+  mustChangePassword Boolean @default(false)
+  lastLogin        DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  lastActiveAt     DateTime?
 
-  // Relations (loose — not all roles use all)
-  client        Client?
-  vaProfile     VA?
-  notifications Notification[]
-  messagesSent  Message[]   @relation("MessageSender")
-  messagesRecv  Message[]   @relation("MessageReceiver")
-  auditLogs     AuditLog[]
-  qaReviews     QAReview[]  @relation("QAEvaluator")
-  timeEntries   TimeEntry[] @relation("TimeEntryUser")
-  feedback      Feedback[]
-  taskComments  TaskComment[]
-  tasksCreated  Task[]      @relation("TaskCreator")
-  tickets       Ticket[]
-  assignments  Assignment[] @relation("AssignmentUser")
-  callsMade     CallSession[] @relation("CallCaller")
-  callsReceived CallSession[] @relation("CallReceiver")
-  emailsSent    EmailLog[]  @relation("EmailSender")
-  emailsReceived EmailLog[] @relation("EmailReceiver")
+  // Relations (loose - not all roles use all)
+  client           Client?
+  vaProfile        VA?
+  notifications    Notification[]
+  messagesSent     Message[]   @relation("MessageSender")
+  messagesRecv     Message[]   @relation("MessageReceiver")
+  auditLogs        AuditLog[]
+  qaReviews        QAReview[]  @relation("QAEvaluator")
+  timeEntries      TimeEntry[] @relation("TimeEntryUser")
+  feedback        Feedback[]
+  taskComments     TaskComment[]
+  tasksCreated     Task[]      @relation("TaskCreator")
+  tickets          Ticket[]
+  assignments      Assignment[] @relation("AssignmentUser")
+  callsMade        CallSession[] @relation("CallCaller")
+  callsReceived    CallSession[] @relation("CallReceiver")
+  emailsSent       EmailLog[]  @relation("EmailSender")
+  emailsReceived   EmailLog[]  @relation("EmailReceiver")
+  resetTokens      PasswordResetToken[]
 }
 
 enum UserRole {
@@ -56,6 +65,17 @@ enum UserRole {
   OPERATIONS_MANAGER
   TEAM_LEAD
   QA_MANAGER
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // ============================================

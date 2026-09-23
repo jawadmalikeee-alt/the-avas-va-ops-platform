@@ -1,7 +1,7 @@
 /**
  * The AVAS — Authentication & Session
- * Lightweight cookie-based session for demo.
- * In production: use NextAuth.js + proper hashing (bcrypt/argon2).
+ * Cookie-based session with SHA-256 password hashing.
+ * Enforces user status checks (ACTIVE/INACTIVE/REMOVED).
  */
 import { cookies } from 'next/headers'
 import { createHash } from 'crypto'
@@ -18,15 +18,22 @@ interface SessionPayload {
   expiresAt: number
 }
 
-function hashPassword(pw: string): string {
+export function hashPassword(pw: string): string {
   return createHash('sha256').update(pw).digest('hex')
 }
 
 export async function signIn(email: string, password: string): Promise<{ ok: boolean; error?: string }> {
   const user = await db.user.findUnique({ where: { email: email.toLowerCase().trim() } })
-  if (!user) return { ok: false, error: 'No account found with that email.' }
+  if (!user) return { ok: false, error: 'Invalid email or password.' }
   if (user.passwordHash !== hashPassword(password)) {
-    return { ok: false, error: 'Incorrect password. Please try again.' }
+    return { ok: false, error: 'Invalid email or password.' }
+  }
+  // Check account status
+  if (user.status === 'INACTIVE') {
+    return { ok: false, error: 'Your account has been disabled. Please contact your administrator.' }
+  }
+  if (user.status === 'REMOVED') {
+    return { ok: false, error: 'This account no longer exists. Please contact your administrator.' }
   }
 
   const payload: SessionPayload = {
@@ -35,7 +42,7 @@ export async function signIn(email: string, password: string): Promise<{ ok: boo
     email: user.email,
     name: user.name,
     timezone: user.timezone,
-    expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7 days
+    expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
   }
 
   const token = Buffer.from(JSON.stringify(payload)).toString('base64url')
@@ -47,8 +54,8 @@ export async function signIn(email: string, password: string): Promise<{ ok: boo
     maxAge: 7 * 24 * 60 * 60,
   })
 
-  // Update lastActiveAt
-  await db.user.update({ where: { id: user.id }, data: { lastActiveAt: new Date() } })
+  // Update lastActiveAt + lastLogin
+  await db.user.update({ where: { id: user.id }, data: { lastActiveAt: new Date(), lastLogin: new Date() } })
   return { ok: true }
 }
 
@@ -78,15 +85,14 @@ export async function getCurrentUser() {
     where: { id: session.userId },
     include: { client: true, vaProfile: true },
   })
+  // If user was removed/inactivated after session creation, deny access
+  if (user && (user.status === 'REMOVED' || user.status === 'INACTIVE')) {
+    return null
+  }
   return user
 }
 
-/**
- * Permission matrix — server-side authorization.
- * Maps each permission to the roles that hold it.
- */
 export const PERMISSIONS = {
-  // Admin
   manage_clients: ['ADMIN', 'OPERATIONS_MANAGER'],
   manage_vas: ['ADMIN', 'OPERATIONS_MANAGER', 'TEAM_LEAD'],
   manage_assignments: ['ADMIN', 'OPERATIONS_MANAGER'],
@@ -98,8 +104,6 @@ export const PERMISSIONS = {
   manage_settings: ['ADMIN'],
   view_audit_logs: ['ADMIN'],
   view_analytics: ['ADMIN', 'OPERATIONS_MANAGER', 'QA_MANAGER'],
-
-  // Client
   view_dashboard: ['CLIENT'],
   view_va: ['CLIENT'],
   view_hours: ['CLIENT'],
@@ -107,8 +111,6 @@ export const PERMISSIONS = {
   approve_deliverable: ['CLIENT'],
   send_message: ['CLIENT', 'ADMIN', 'VA'],
   view_quality: ['CLIENT'],
-
-  // VA
   view_tasks: ['VA'],
   track_time: ['VA'],
   submit_work: ['VA'],
@@ -122,10 +124,6 @@ export function can(role: string, perm: Permission): boolean {
   return (PERMISSIONS[perm] as readonly string[]).includes(role)
 }
 
-/**
- * Tenant isolation: returns the client ID for the current user.
- * Throws if a CLIENT user tries to access another tenant's data.
- */
 export async function getCurrentTenant(): Promise<{ clientId: string | null; vaId: string | null }> {
   const user = await getCurrentUser()
   if (!user) return { clientId: null, vaId: null }
@@ -135,16 +133,12 @@ export async function getCurrentTenant(): Promise<{ clientId: string | null; vaI
   }
 }
 
-/**
- * Server-side guard: ensures the given clientId matches the logged-in client.
- */
 export async function assertTenantAccess(clientId: string): Promise<boolean> {
   const user = await getCurrentUser()
   if (!user) return false
   if (user.role === 'ADMIN' || user.role === 'OPERATIONS_MANAGER' || user.role === 'QA_MANAGER' || user.role === 'TEAM_LEAD') return true
   if (user.role === 'CLIENT') return user.client?.id === clientId
   if (user.role === 'VA') {
-    // VA can access clients they're assigned to
     const assignments = await db.assignment.findMany({
       where: { vaId: user.vaProfile?.id, status: 'Active' },
       select: { clientId: true },
